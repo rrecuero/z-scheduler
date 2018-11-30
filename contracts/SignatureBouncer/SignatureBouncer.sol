@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
-import "./roles/SignerRole.sol";
-import "../cryptography/ECDSA.sol";
+import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
+import "openzeppelin-solidity/contracts/access/roles/SignerRole.sol";
 
 /**
  * @title SignatureBouncer
@@ -42,62 +42,41 @@ contract SignatureBouncer is SignerRole {
     uint256 private constant _METHOD_ID_SIZE = 4;
     // Signature size is 65 bytes (tightly packed v + r + s), but gets padded to 96 bytes
     uint256 private constant _SIGNATURE_SIZE = 96;
+    // Signer size is 20 bytes
+    uint256 private constant _SIGNER_SIZE = 20;
 
     constructor () internal {}
 
     /**
-     * @dev requires that a valid signature of a signer was provided
-     */
-    modifier onlyValidSignature(bytes signature) {
-        require(_isValidSignature(msg.sender, signature));
-        _;
-    }
-
-    /**
-     * @dev requires that a valid signature with a specifed method of a signer was provided
-     */
-    modifier onlyValidSignatureAndMethod(bytes signature) {
-        require(_isValidSignatureAndMethod(msg.sender, signature));
-        _;
-    }
-
-    /**
      * @dev requires that a valid signature with a specifed method and params of a signer was provided
      */
-    modifier onlyValidSignatureAndData(bytes signature) {
-        require(_isValidSignatureAndData(msg.sender, signature));
+    modifier onlyValidSignatureAndData() {
+        bytes memory signer = new bytes(_SIGNER_SIZE);
+        for (uint i = msg.data.length - _SIGNER_SIZE; i < msg.data.length; i++) {
+            signer[i] = msg.data[i];
+        }
+        bytes memory signature = new bytes(_SIGNATURE_SIZE);
+        for (uint j = msg.data.length - _SIGNER_SIZE - _SIGNATURE_SIZE; j < msg.data.length - _SIGNER_SIZE; j++) {
+            signature[j] = msg.data[j];
+        }
+        require(_isValidSignatureAndData(bytesToAddress(signer), signature));
         _;
     }
 
-    /**
-     * @dev is the signature of `this + sender` from a signer?
-     * @return bool
-     */
-    function _isValidSignature(address account, bytes signature) internal view returns (bool) {
-        return _isValidDataHash(keccak256(abi.encodePacked(address(this), account)), signature);
+    function bytesToAddress(bytes bys) private pure returns (address addr) {
+      assembly {
+        addr := mload(add(bys,20))
+      }
     }
 
     /**
-     * @dev is the signature of `this + sender + methodId` from a signer?
-     * @return bool
-     */
-    function _isValidSignatureAndMethod(address account, bytes signature) internal view returns (bool) {
-        bytes memory data = new bytes(_METHOD_ID_SIZE);
-        for (uint i = 0; i < data.length; i++) {
-            data[i] = msg.data[i];
-        }
-        return _isValidDataHash(keccak256(abi.encodePacked(address(this), account, data)), signature);
-    }
-
-    /**
-        * @dev is the signature of `this + sender + methodId + params(s)` from a signer?
-        * @notice the signature parameter of the method being validated must be the "last" parameter
+        * @dev signature + signer are added at the end of msg.data
         * @return bool
         */
     function _isValidSignatureAndData(address account, bytes signature) internal view returns (bool) {
-        require(msg.data.length > _SIGNATURE_SIZE);
+        require(msg.data.length > (_SIGNATURE_SIZE + _SIGNER_SIZE));
 
-        bytes memory data = new bytes(msg.data.length - _SIGNATURE_SIZE);
+        bytes memory data = new bytes(msg.data.length - _SIGNATURE_SIZE - _SIGNER_SIZE);
         for (uint i = 0; i < data.length; i++) {
             data[i] = msg.data[i];
         }

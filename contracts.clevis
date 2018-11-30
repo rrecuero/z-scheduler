@@ -1,3 +1,5 @@
 BouncerProxy
 SignatureBouncer
 BouncerWithNonce
+BouncerWithReward
+Scheduler
