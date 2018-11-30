@@ -45,8 +45,6 @@ contract SignatureBouncer is SignerRole {
     // Signer size is 20 bytes
     uint256 private constant _SIGNER_SIZE = 20;
 
-    constructor () internal {}
-
     /**
      * @dev requires that a valid signature with a specifed method and params of a signer was provided
      */

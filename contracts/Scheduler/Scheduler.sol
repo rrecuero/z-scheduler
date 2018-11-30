@@ -7,15 +7,11 @@ contract Scheduler is BouncerWithReward {
     require(block.number > minBlock, "Invalid Block");
     _;
   }
-  function forward(address destination, uint value, bytes data,
+  function schedule(address destination, uint value, bytes data,
     uint nonce, address rewardToken, uint rewardAmount, uint minBlock)
-    onlyValidSignatureAndData
-    withNonce(msg.sender, minBlock * 1000 + nonce)
-    withReward(rewardToken, rewardAmount)
     afterBlock(minBlock)
     public
   {
-      require(executeCall(destination, value, data));
-      emit Forwarded(destination, value, data);
+      forward(destination, value, data, nonce, rewardToken, rewardAmount);
   }
 }
