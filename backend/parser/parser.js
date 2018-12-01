@@ -87,11 +87,12 @@ export default class Parser {
   }
 
   async checkTransaction(transaction) {
+    console.log('transaction', transaction);
     const instanceContract = new this.web3.eth.Contract(
       this.bouncerContract,
       transaction.parts[0]
     );
-    const ready = await instanceContract.methods.isValidSigAndBlock(
+    const ready = await instanceContract.methods.isValidSignatureAndData(
       transaction.sig,
       transaction.parts[1],
       transaction.parts[2],

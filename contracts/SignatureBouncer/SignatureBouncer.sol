@@ -57,7 +57,7 @@ contract SignatureBouncer is SignerRole {
         for (uint j = msg.data.length - _SIGNER_SIZE - _SIGNATURE_SIZE; j < msg.data.length - _SIGNER_SIZE; j++) {
             signature[j] = msg.data[j];
         }
-        require(_isValidSignatureAndData(bytesToAddress(signer), signature));
+        require(isValidSignatureAndData(bytesToAddress(signer), signature));
         _;
     }
 
@@ -71,7 +71,7 @@ contract SignatureBouncer is SignerRole {
         * @dev signature + signer are added at the end of msg.data
         * @return bool
         */
-    function _isValidSignatureAndData(address account, bytes signature) internal view returns (bool) {
+    function isValidSignatureAndData(address account, bytes signature) public view returns (bool) {
         require(msg.data.length > (_SIGNATURE_SIZE + _SIGNER_SIZE));
 
         bytes memory data = new bytes(msg.data.length - _SIGNATURE_SIZE - _SIGNER_SIZE);

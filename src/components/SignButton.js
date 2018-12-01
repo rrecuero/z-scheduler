@@ -35,8 +35,17 @@ class SignButton extends Component {
     let timestamp = Date.now();
     let message = `${this.props.account} trusts bouncer proxy
       ${this.props.address} at ${timestamp}`;
-    let sig = await this.props.web3.eth.personal.sign(
-      message, this.props.account);
+    console.log('this.props.web3', this.props.web3);
+    console.log(this.props.metaAccount.privateKey);
+    console.log('this.props', this.props);
+    let sig = null;
+    if (this.props.metaAccount) {
+      sig = this.props.web3.eth.accounts.sign(message,
+        this.props.metaAccount.privateKey).signature;
+    } else {
+      sig = await this.props.web3.eth.personal.sign(
+        message, this.props.account);
+    }
     console.log("SIG", sig);
     let data = JSON.stringify({
       address: this.props.address,

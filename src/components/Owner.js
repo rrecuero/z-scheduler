@@ -13,7 +13,7 @@ class Owner extends Component {
   }
 
   handleBouncer(e){
-    this.props.updateBouncer(e.target.value);
+    this.updateBouncer(e.target.value);
   }
 
   updateBouncer(bouncer){
@@ -22,8 +22,9 @@ class Owner extends Component {
 
   addBouncer() {
     const { tx,contract } = this.props;
-    console.log("Add Bouncer ", this.props.bouncer);
-    tx(contract.addSigner(this.props.bouncer), 55000, (receipt) => {
+    console.log("Add Bouncer ", this.state.bouncer);
+    tx(contract.addSigner(this.state.bouncer), 55000, (receipt) => {
+      this.updateBouncer(null);
       console.log("~~~~ BOUNCER ADDED:", receipt);
     });
   }
@@ -40,7 +41,7 @@ class Owner extends Component {
         <Blockie
           address={(this.props.bouncer && this.props.bouncer.length) ?
             this.props.bouncer.toLowerCase() : DEFAULT_ADDRESS} />
-        <Button color="blue" onClick={this.addBouncer.bind(this)}>
+        <Button color="blue" disabled={!this.state.bouncer} onClick={() => this.addBouncer()}>
           Add Bouncer
         </Button>
         {this.state.bouncers && this.state.bouncers.map((bouncer)=> (

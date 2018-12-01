@@ -84,16 +84,18 @@ class Bouncer extends Component {
   }
 
   async sendMetaTx(proxyAddress,fromAddress,toAddress,value,txData,minBlock){
-    if(!minBlock) minBlock=0
-    let {contract,account,web3} = this.props
-    const nonce = await contract.nonce(fromAddress,minBlock).call()
+    const { contract, account, web3 } = this.props;
+    if(!minBlock) minBlock = 0;
+    let nonce = 0;
+    if (contract.nonce) {
+      nonce = await contract.nonce(fromAddress, minBlock).call();
+    }
     console.log("Current nonce for "+fromAddress+" is ",nonce)
-    let rewardAddress = "0x0000000000000000000000000000000000000000"
+    let rewardAddress = "0x0000000000000000000000000000000000000000";
     let rewardAmount = 0
-    if(this.state.rewardTokenAddress){
+    if (this.state.rewardTokenAddress) {
       if(this.state.rewardTokenAddress === "0" || this.state.rewardTokenAddress === "0x0000000000000000000000000000000000000000"){
-        rewardAddress = "0x0000000000000000000000000000000000000000"
-        this.setState({rewardTokenAddress:rewardAddress})
+        this.setState({rewardTokenAddress: rewardAddress});
         rewardAmount = web3.utils.toWei(this.state.rewardToken+"", 'ether')
         console.log("rewardAmount",rewardAmount)
       }else{
@@ -116,10 +118,16 @@ class Bouncer extends Component {
     ];
     /*web3.utils.padLeft("0x"+nonce,64),*/
     console.log("PARTS", parts);
-    const hashOfMessage = soliditySha3(...parts);
-    const message = hashOfMessage;
-    console.log("sign",message);
-    let sig = await this.props.web3.eth.personal.sign(""+message,account);
+    const message = soliditySha3(...parts);
+    console.log("sign", message);
+    let sig;
+    if (this.props.metaAccount) {
+      sig = this.props.web3.eth.accounts.sign(message,
+        this.props.metaAccount.privateKey).signature;
+    } else {
+      sig = await this.props.web3.eth.personal.sign(
+        message, account);
+    }
     console.log("SIG",sig);
     let postData = {
       gas: this.state.gasLimit,
@@ -132,7 +140,7 @@ class Bouncer extends Component {
           'Content-Type': 'application/json',
       }
     }).then((response)=>{
-      console.log("TX RESULT",response)
+      console.log("TX RESULT",response);
     })
     .catch((error)=>{
       console.log(error);
