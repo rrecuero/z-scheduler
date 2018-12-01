@@ -8,7 +8,7 @@ import winston from 'winston';
 import compression from 'compression';
 import path from 'path';
 import expressWinston from 'express-winston';
-import Parser from 'parser/parser';
+import Parser from '../parser/parser';
 import ContractLoader from '../eth/contractLoader';
 
 const web3 = new Web3();
