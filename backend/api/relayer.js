@@ -2,7 +2,7 @@ import { config } from 'config';
 
 let transactions = {};
 
-module.exports = (app, accounts, redis, web3) => {
+module.exports = (app, redis, accounts, web3) => {
   const DESKTOPMINERACCOUNT = 3;
   const NETWORK = config.get('deploy').network;
   const transactionListKey = 'transactionList' + NETWORK;

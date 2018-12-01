@@ -1,5 +1,5 @@
 import relayerRoutes from './relayer';
 
-module.exports = (app, redis, accounts) => {
-  relayerRoutes(app, redis, accounts);
+module.exports = (app, redis, accounts, web3) => {
+  relayerRoutes(app, redis, accounts, web3);
 };

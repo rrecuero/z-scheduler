@@ -164,7 +164,7 @@ class App extends Component {
           }}>
           LEARN MORE
           </Button>
-          <Button color="green" size="2" onClick={this.deployBouncerProxy('BouncerProxy').bind(this)}>
+          <Button color="green" size="2" onClick={() => this.deployBouncerProxy('BouncerProxy')}>
             DEPLOY
           </Button>
         </div>
@@ -274,7 +274,7 @@ class App extends Component {
       <div className="App">
         {metamask}
         {this.renderConnectedDisplay()}
-        {!this.state.address && this.renderHome()}
+        {!this.state.address && this.state.contracts && this.renderHome()}
         {this.renderContractDisplay()}
         {this.state.contract && this.renderQR()}
         {this.state.contract && this.renderBackend()}

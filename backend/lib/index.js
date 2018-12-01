@@ -104,13 +104,13 @@ web3.eth.getAccounts().then((_accounts) => {
     }
   });
 
+  // Routes
+  require('../api/')(app, redis, _accounts, web3);
+
   // All remaining requests return the React app, so it can handle routing.
   app.get('*', (request, response) => {
     response.sendFile(path.resolve(__dirname, '../../client/build', 'index.html'));
   });
-
-  // Routes
-  require('../api/')(app, redis, _accounts, web3);
 
   app.listen(port, () => {
     console.log('Listening');
