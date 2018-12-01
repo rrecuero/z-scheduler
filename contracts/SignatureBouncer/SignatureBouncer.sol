@@ -34,6 +34,7 @@ import "openzeppelin-solidity/contracts/access/roles/SignerRole.sol";
  * the data in the signature much more complex.
  * See https://ethereum.stackexchange.com/a/50616 for more details.
  */
+
 contract SignatureBouncer is SignerRole {
     using ECDSA for bytes32;
 
@@ -49,13 +50,15 @@ contract SignatureBouncer is SignerRole {
      * @dev requires that a valid signature with a specifed method and params of a signer was provided
      */
     modifier onlyValidSignatureAndData() {
-        bytes memory signer = new bytes(_SIGNER_SIZE);
-        for (uint i = msg.data.length - _SIGNER_SIZE; i < msg.data.length; i++) {
-            signer[i] = msg.data[i];
-        }
+        uint start = msg.data.length - _SIGNATURE_SIZE - _SIGNER_SIZE;
         bytes memory signature = new bytes(_SIGNATURE_SIZE);
-        for (uint j = msg.data.length - _SIGNER_SIZE - _SIGNATURE_SIZE; j < msg.data.length - _SIGNER_SIZE; j++) {
-            signature[j] = msg.data[j];
+        for (uint j = 0; j < signature.length; j++) {
+          signature[j] = msg.data[j + start];
+        }
+        start = start + _SIGNATURE_SIZE;
+        bytes memory signer = new bytes(_SIGNER_SIZE);
+        for (uint i = 0; i < signer.length; i++) {
+          signer[i] = msg.data[i + start];
         }
         require(isValidSignatureAndData(bytesToAddress(signer), signature));
         _;

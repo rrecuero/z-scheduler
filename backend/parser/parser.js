@@ -38,35 +38,26 @@ export default class Parser {
 
   doTransaction(contract, txObject) {
     console.log('Forwarding tx to ', contract._address, ' with local account ', this.account);
+    console.log('execute TX', txObject);
+
+    // Do other proxy cases
+    const callData = contract.methods.forward(
+      txObject.parts[2],
+      txObject.parts[3],
+      txObject.parts[4],
+    ).encodeABI();
+    // We packed signature and signer
+    const packedMsg = callData + txObject.sig.slice(2) + txObject.parts[1].slice(2);
     const txparams = {
+      to: txObject.parts[0],
       from: this.account,
       gas: txObject.gas,
-      gasPrice: Math.round(4 * 1000000000)
+      gasPrice: Math.round(4 * 1000000000),
+      value: 0,
+      data: packedMsg
     };
-
-    // const result = await clevis('contract','forward','BouncerProxy',
-    // accountIndexSender,sig,accounts[accountIndexSigner],
-    // localContractAddress('Example'),'0',data,rewardAddress,reqardAmount)
-    console.log('TX',
-      txObject.sig,
-      txObject.parts[1],
-      txObject.parts[2],
-      txObject.parts[3],
-      txObject.parts[4],
-      txObject.parts[5],
-      txObject.parts[6],
-      txObject.parts[7]);
-    console.log('PARAMS', txparams);
-    contract.methods.forward(
-      txObject.sig,
-      txObject.parts[1],
-      txObject.parts[2],
-      txObject.parts[3],
-      txObject.parts[4],
-      txObject.parts[5],
-      txObject.parts[6],
-      txObject.parts[7]
-    ).send(txparams, (error, transactionHash) => {
+    console.log('txparams', txparams);
+    this.web3.eth.sendTransaction(txparams, (error, transactionHash) => {
       console.log('TX CALLBACK', error, transactionHash);
     })
       .on('error', (err, receiptMaybe) => {
@@ -78,34 +69,37 @@ export default class Parser {
       .on('receipt', (receipt) => {
         console.log('TX RECEIPT', receipt);
       })
-      /* .on('confirmation', (confirmations,receipt)=>{
-        console.log('TX CONFIRM',confirmations,receipt)
-      }) */
+      .on('confirmation', (confirmations, receipt) => {
+        console.log('TX CONFIRM', confirmations, receipt);
+      })
       .then((receipt) => {
+        this.removeTransaction(txObject.sig);
         console.log('TX THEN', receipt);
       });
   }
 
   async checkTransaction(transaction) {
-    console.log('transaction', transaction);
     const instanceContract = new this.web3.eth.Contract(
       this.bouncerContract,
       transaction.parts[0]
     );
-    const ready = await instanceContract.methods.isValidSignatureAndData(
-      transaction.sig,
-      transaction.parts[1],
-      transaction.parts[2],
-      transaction.parts[3],
-      transaction.parts[4],
-      transaction.parts[5],
-      transaction.parts[6],
-      transaction.parts[7]
-    ).call();
-    if (ready) {
-      console.log('Transaction is READY ---> ');
-      this.doTransaction(instanceContract, transaction);
-      this.removeTransaction(transaction.sig);
+    try {
+      const callData = instanceContract.methods.isValidSignatureAndData(
+        transaction.parts[1],
+        transaction.sig
+      ).encodeABI();
+      // We packed signature and signer
+      const packedMsg = callData + transaction.sig.slice(2) + transaction.parts[1].slice(2);
+      const ready = await this.web3.eth.call({
+        to: transaction.parts[0],
+        data: packedMsg
+      });
+      if (ready) {
+        console.log('Transaction is READY ---> ');
+        this.doTransaction(instanceContract, transaction);
+      }
+    } catch (e) {
+      console.error(e);
     }
   }
 

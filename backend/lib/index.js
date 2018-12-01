@@ -84,7 +84,7 @@ const contracts = ContractLoader([
 ], web3);
 
 web3.eth.getAccounts().then((_accounts) => {
-  const parser = new Parser(redis, _accounts[3], contracts.BouncerProxy._jsonInterface);
+  const parser = new Parser(redis, _accounts[3], contracts.BouncerProxy._jsonInterface, web3);
   console.log('ACCOUNTS', _accounts);
 
   web3.eth.getBlockNumber().then((blockNumber) => {
