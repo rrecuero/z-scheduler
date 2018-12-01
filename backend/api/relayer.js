@@ -8,53 +8,41 @@ module.exports = (app, redis, accounts, web3) => {
   const transactionListKey = 'transactionList' + NETWORK;
 
   app.get('/api/relayer/clear', (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    console.log('/clear');
-    res.set('Content-Type', 'application/json');
-    res.end(JSON.stringify({ hello: 'world' }));
     redis.set(transactionListKey, JSON.stringify([]), 'EX', 60 * 60 * 24 * 7);
+    res.end(JSON.stringify({ success: true }));
   });
 
   app.get('/api/relayer/miner', (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.set('Content-Type', 'application/json');
     res.end(JSON.stringify({
       address: accounts[DESKTOPMINERACCOUNT]
     }));
   });
 
   app.get('/api/relayer/sigs/:contract', (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
     console.log('/sigs/' + req.params.contract);
     const sigsKey = req.params.contract + 'sigs';
     redis.get(sigsKey, (err, result) => {
-      res.set('Content-Type', 'application/json');
       res.end(result);
     });
   });
 
   app.get('/api/relayer/contracts', (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
     console.log('/contracts');
     const deployedContractsKey = 'deployedcontracts' + NETWORK;
     redis.get(deployedContractsKey, (err, result) => {
-      res.set('Content-Type', 'application/json');
       res.end(result);
     });
   });
 
   app.get('/api/relayer/transactions', (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
     console.log('/transactions');
     redis.get(transactionListKey, (err, result) => {
-      res.set('Content-Type', 'application/json');
       transactions = result;
       res.end(result);
     });
   });
 
   app.get('/api/relayer/txs/:account', (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
     const thisTxsKey = req.params.account.toLowerCase();
     console.log('Getting Transactions for ', thisTxsKey);
     const allTxs = transactions[thisTxsKey];
@@ -69,12 +57,10 @@ module.exports = (app, redis, accounts, web3) => {
         }
       }
     }
-    res.set('Content-Type', 'application/json');
     res.end(JSON.stringify(recentTxns));
   });
 
   app.post('/api/relayer/sign', (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
     console.log('/sign', req.body);
     const account = web3.eth.accounts.recover(req.body.message, req.body.sig);
     console.log('RECOVERED:', account);
@@ -97,12 +83,10 @@ module.exports = (app, redis, accounts, web3) => {
         }
       });
     }
-    res.set('Content-Type', 'application/json');
-    res.end(JSON.stringify({ signed: true }));
+    res.end(JSON.stringify({ success: true }));
   });
 
   app.post('/api/relayer/deploy', (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
     console.log('/deploy', req.body);
     let contractsToSave;
     const { contractAddress } = req.body;
@@ -120,19 +104,18 @@ module.exports = (app, redis, accounts, web3) => {
       }
       console.log('saving contracts:', contractsToSave);
       redis.set(deployedContractsKey, JSON.stringify(contractsToSave), 'EX', 60 * 60 * 24 * 7);
-      res.set('Content-Type', 'application/json');
       res.end(JSON.stringify({ contract: contractAddress }));
     });
   });
 
   app.post('/api/relayer/tx', async (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
     console.log('/tx', req.body);
     console.log('RECOVER:', req.body.message, req.body.sig);
     const account = web3.eth.accounts.recover(req.body.message, req.body.sig);
     console.log('RECOVERED:', account);
     if (account.toLowerCase() === req.body.parts[1].toLowerCase()) {
       console.log('Correct sig... relay transaction to contract... might want more filtering here');
+      // Add immediate proxy tx
       redis.get(transactionListKey, (err, result) => {
         let newTransactions;
         try {
@@ -146,7 +129,6 @@ module.exports = (app, redis, accounts, web3) => {
         console.log('saving transactions:', newTransactions);
         redis.set(transactionListKey, JSON.stringify(newTransactions), 'EX', 60 * 60 * 24 * 7);
       });
-      res.set('Content-Type', 'application/json');
       res.end(JSON.stringify({ success: true }));
     }
   });

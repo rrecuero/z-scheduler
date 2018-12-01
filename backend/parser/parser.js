@@ -6,11 +6,12 @@ const transactionListKey = 'transactionList' + NETWORK;
 let instance = null;
 
 export default class Parser {
-  constructor(redis, account, bouncerContract) {
+  constructor(redis, account, bouncerContract, web3) {
     if (!instance) {
       this.redis = redis;
       this.account = account;
       this.bouncerContract = bouncerContract;
+      this.web3 = web3;
       instance = this;
     }
     return instance;
@@ -86,7 +87,7 @@ export default class Parser {
   }
 
   async checkTransaction(transaction) {
-    const instanceContract = new web3.eth.Contract(
+    const instanceContract = new this.web3.eth.Contract(
       this.bouncerContract,
       transaction.parts[0]
     );

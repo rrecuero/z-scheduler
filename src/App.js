@@ -180,13 +180,16 @@ class App extends Component {
 
   renderContractDisplay() {
     const { web3, contracts } = this.state;
+    console.log('this.state.address', this.state.address);
     if (web3 && contracts) {
       if (!this.state.contract) {
-        return(
-          <div style={{padding:20}}>
-            Connecting to {this.state.address}
-          </div>
-        );
+        if (this.state.address) {
+          return(
+            <div style={{padding:20}}>
+              Connecting to {this.state.address}
+            </div>
+          );
+        }
       } else  {
         const ownerBouncer = this.state.owner.toLowerCase() ===
           this.state.account.toLowerCase();
