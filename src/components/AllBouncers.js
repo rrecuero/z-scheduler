@@ -5,7 +5,7 @@ import StackGrid from "react-stack-grid";
 
 const POLL_TIME = 15500;
 
-class allBouncers extends Component {
+class AllBouncers extends Component {
   constructor(props) {
     super(props);
     this.pollInterval = null;
@@ -15,7 +15,7 @@ class allBouncers extends Component {
   }
 
   componentDidMount() {
-    this.pollInterval = setInterval(this.load.bind(this), POLL_TIME);
+    this.pollInterval = setInterval(this.loadBouncers.bind(this), POLL_TIME);
     this.loadBouncers();
   }
 
@@ -50,4 +50,4 @@ class allBouncers extends Component {
   }
 }
 
-export default allBouncers;
+export default AllBouncers;

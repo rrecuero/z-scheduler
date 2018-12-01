@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const POLL_TIME_MS = 5000;
 
-class Bouncer extends Component {
+class Miner extends Component {
   constructor(props) {
     super(props);
     this.pollInterval = null;
@@ -46,4 +46,4 @@ class Bouncer extends Component {
   }
 }
 
-export default Bouncer;
+export default Miner;

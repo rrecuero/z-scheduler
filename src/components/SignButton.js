@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const POLL_TIME = 15000;
 
-class Backend extends Component {
+class SignButton extends Component {
   constructor(props) {
     super(props);
     this.pollInterval = null;
@@ -14,7 +14,7 @@ class Backend extends Component {
   }
 
   componentDidMount() {
-    this.pollInterval = setInterval(this.load.bind(this), POLL_TIME);
+    this.pollInterval = setInterval(this.loadSignatures.bind(this), POLL_TIME);
     this.loadSignatures();
   }
 
@@ -76,4 +76,4 @@ class Backend extends Component {
   }
 }
 
-export default Backend;
+export default SignButton;

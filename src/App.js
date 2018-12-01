@@ -9,7 +9,7 @@ import styles from './App.css';
 import Owner from "./components/Owner.js"
 import AllBouncers from "./components/AllBouncers.js"
 import Bouncer from "./components/Bouncer.js"
-import Backend from "./components/Backend.js"
+import SignButton from "./components/SignButton.js"
 import Miner from "./components/Miner.js"
 import QRCode from 'qrcode.react';
 import axios from 'axios';
@@ -143,24 +143,6 @@ class App extends Component {
     );
   }
 
-  renderQR() {
-    return (
-      <div style={{position:"fixed",top:100,right:20}}>
-        <QRCode value={window.location.toString()} />
-      </div>
-    );
-  }
-
-  renderBackend() {
-    return (
-      <Backend
-        {...this.state}
-        backendUrl={backendUrl}
-        updateBouncer={this.updateBouncer.bind(this)}
-      />
-    );
-  }
-
   renderHome() {
     const { web3, contracts } = this.state;
     return (
@@ -265,8 +247,14 @@ class App extends Component {
         {this.renderConnectedDisplay()}
         {!this.state.address && this.state.contracts && this.renderHome()}
         {this.renderContractDisplay()}
-        {this.state.contract && this.renderQR()}
-        {this.state.contract && this.renderBackend()}
+        {this.state.contract &&
+          <div style={{position:"fixed",top:100,right:20}}>
+            <QRCode value={window.location.toString()} />
+          </div>
+        }
+        {this.state.contract &&
+          <SignButton {...this.state} backendUrl={backendUrl} />
+        }
       </div>
     );
   }
