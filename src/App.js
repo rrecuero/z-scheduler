@@ -6,11 +6,11 @@ import {
   Address, Button } from "dapparatus"
 import Web3 from 'web3';
 import styles from './App.css';
-import Owner from "./components/owner.js"
-import AllBouncers from "./components/allBouncers.js"
-import Bouncer from "./components/bouncer.js"
-import Backend from "./components/backend.js"
-import Miner from "./components/miner.js"
+import Owner from "./components/Owner.js"
+import AllBouncers from "./components/AllBouncers.js"
+import Bouncer from "./components/Bouncer.js"
+import Backend from "./components/Backend.js"
+import Miner from "./components/Miner.js"
 import QRCode from 'qrcode.react';
 import axios from 'axios';
 
@@ -18,7 +18,7 @@ let backendUrl = "http://localhost:4000/api/relayer/";
 if (window.location.href.indexOf("metatx.dapis.io") >= 0) {
   backendUrl = "https://metatx.dapis.io/api/relayer/";
 }
-const WEB3_PROVIDER = 'http://0.0.0.0:8545';
+const FALLBACK_WEB3_PROVIDER = 'http://0.0.0.0:8545';
 const METATX = {
   endpoint: backendUrl,
   contract: require("./contracts/BouncerProxy.address.js"),
@@ -39,10 +39,10 @@ class App extends Component {
      web3: false,
      account: false,
      gwei: 4,
+     bouncerKey: 'BouncerProxy',
      address: window.location.pathname.replace("/",""),
      contract: false,
-     owner: "",
-     bouncer: ""
+     owner: ""
    }
   }
 
@@ -54,22 +54,18 @@ class App extends Component {
       1220000,
       (receipt) => {
       if (receipt.contractAddress) {
-        axios.post(backendUrl + 'deploy', receipt, {
+        axios.post(`${backendUrl}deploy`, receipt, {
           headers: {
               'Content-Type': 'application/json',
           }
         }).then((response) => {
-          window.location.href = "/" + receipt.contractAddress;
+          window.location.href = `/${receipt.contractAddress}`;
         })
         .catch((error) => {
           console.error('Error deploying contract', error);
         })
       }
     })
-  }
-
-  updateBouncer(bouncer){
-    this.setState({ bouncer });
   }
 
   renderConnectedDisplay() {
@@ -88,7 +84,7 @@ class App extends Component {
                 this.setState({ contracts, metaContract: contracts.BouncerProxy }, async () =>{
                   if (this.state.address) {
                     console.log("Loading dyamic contract " + this.state.address);
-                    const dynamicContract = customLoader("BouncerProxy", this.state.address);
+                    const dynamicContract = customLoader(this.state.bouncerKey, this.state.address);
                     const owner = await dynamicContract.owner().call()
                     this.setState({
                       contract: dynamicContract,
@@ -166,28 +162,36 @@ class App extends Component {
   }
 
   renderHome() {
+    const { web3, contracts } = this.state;
     return (
       <div className="titleCenter" style={{marginTop:-50,width:"100%"}}>
         <div style={{width:"100%",textAlign:"center",fontSize:150}}>
-         metatx.io
+         z-scheduler
         </div>
         <div style={{width:"100%",textAlign:"center",fontSize:14,marginBottom:20}}>
-         exploring etherless meta transactions and universal logins in ethereum
+          exploring etherless meta transactions, scheduled tx and different bouncer proxies
         </div>
         <div style={{width:"100%",textAlign:"center"}}>
           <Button size="2" onClick={()=>{
-            window.location = "https://github.com/austintgriffith/bouncer-proxy/blob/master/README.md"
+            window.location = "https://github.com/rrecuero/z-scheduler"
           }}>
-          LEARN MORE
+            Learn more
           </Button>
-          <Button color="green" size="2" onClick={() => this.deployBouncerProxy('BouncerProxy')}>
-            DEPLOY
-          </Button>
+          {web3 && contracts && (
+            <Button color="green" size="2" onClick={() => this.deployBouncerProxy(this.state.bouncerKey)}>
+              Deploy
+            </Button>
+          )}
+          {(!web3 || !contracts) && (
+            <Button color="orange" size="2" onClick={()=>{
+              alert("Please unlock Metamask or install web3 or mobile ethereum wallet.")
+            }}>
+              Loading...
+            </Button>
+          )}
         </div>
         <div style={{marginTop:150}}>
-          <AllBouncers
-            backendUrl={backendUrl}
-          />
+          <AllBouncers backendUrl={backendUrl} />
         </div>
       </div>
     );
@@ -211,7 +215,7 @@ class App extends Component {
         return (
           <div style={{padding:20}}>
             <Miner backendUrl={backendUrl} {...this.state} />
-            <h1><a href="/">metatx.io</a></h1>
+            <h1><a href="/">z-scheduler</a></h1>
             <div>
               <Address
                 {...this.state}
@@ -227,11 +231,6 @@ class App extends Component {
             {ownerBouncer && (
               <Owner
                 {...this.state}
-                onUpdate={(bouncerUpdate)=>{
-                  console.log("bouncerUpdate",bouncerUpdate)
-                  this.setState(bouncerUpdate)
-                }}
-                updateBouncer={this.updateBouncer.bind(this)}
               />
             )}
             {!ownerBouncer && (
@@ -244,57 +243,22 @@ class App extends Component {
         );
       }
     } else  {
-      return (
-        <div style={{padding:20}}>
-          <div className="titleCenter" style={{marginTop:-50}}>
-            <div style={{width:"100%",textAlign:"center",fontSize:150}}>
-             metatx.io
-            </div>
-            <div style={{width:"100%",textAlign:"center",fontSize:14,marginBottom:20}}>
-             please unlock metamask or mobile web3 provider
-            </div>
-            <div style={{width:"100%",textAlign:"center"}}>
-              <Button size="2" onClick={()=>{
-                window.location = "https://github.com/austintgriffith/bouncer-proxy/blob/master/README.md"
-              }}>
-              LEARN MORE
-              </Button>
-              <Button color="orange" size="2" onClick={()=>{
-                alert("Please unlock Metamask or install web3 or mobile ethereum wallet.")
-              }}>
-              DEPLOY
-              </Button>
-            </div>
-          </div>
-        </div>
-      );
+      return this.renderHome();
     }
   }
 
   render() {
-    // const metamask = (
-    //   <Metamask
-    //     config={{requiredNetwork: ['Unknown', 'Rinkeby']}}
-    //     onUpdate={(state) => {
-    //       if(state.web3Provider) {
-    //         state.web3 = new Web3(state.web3Provider);
-    //         this.setState(state);
-    //       }
-    //     }}
-    //   />
-    // );
-
     return (
       <div className="App">
         <Dapparatus
           metaTx={METATX}
           config={{requiredNetwork:['Unknown','Rinkeby']}}
-          fallbackWeb3Provider={new Web3.providers.HttpProvider(WEB3_PROVIDER)}
+          fallbackWeb3Provider={new Web3.providers.HttpProvider(FALLBACK_WEB3_PROVIDER)}
           onUpdate={(state)=>{
-           console.log("metamask state update:",state)
+           console.log("dapparatus update:",state)
            if(state.web3Provider) {
-             state.web3 = new Web3(state.web3Provider)
-             this.setState(state)
+             state.web3 = new Web3(state.web3Provider);
+             this.setState(state);
            }
           }}
         />
