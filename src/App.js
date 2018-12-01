@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Metamask,
+import {
+  Dapparatus,
   Gas, ContractLoader,
   Transactions,
-  Scaler,
   Address, Button } from "dapparatus"
 import Web3 from 'web3';
 import styles from './App.css';
@@ -18,6 +18,11 @@ let backendUrl = "http://localhost:4000/api/relayer/";
 if (window.location.href.indexOf("metatx.dapis.io") >= 0) {
   backendUrl = "https://metatx.dapis.io/api/relayer/";
 }
+const WEB3_PROVIDER = 'http://0.0.0.0:8545';
+const METATX = {
+  endpoint: backendUrl,
+  contract: require("./contracts/BouncerProxy.address.js"),
+};
 
 const contractsCode = {
   BouncerProxy: require("./contracts/BouncerProxy.bytecode.js"),
@@ -80,7 +85,7 @@ class App extends Component {
               require={path => {return require(`${__dirname}/${path}`)}}
               onReady={(contracts, customLoader) => {
                 console.log("contracts loaded", contracts);
-                this.setState({ contracts }, async () =>{
+                this.setState({ contracts, metaContract: contracts.BouncerProxy }, async () =>{
                   if (this.state.address) {
                     console.log("Loading dyamic contract " + this.state.address);
                     const dynamicContract = customLoader("BouncerProxy", this.state.address);
@@ -101,6 +106,20 @@ class App extends Component {
               block={block}
               avgBlockTime={avgBlockTime}
               etherscan={etherscan}
+              metaAccount={this.state.metaAccount}
+              metaContract={this.state.metaContract}
+              metatx={METATX}
+              balance={this.state.balance} /* so we can metatx if balance 0 */
+              metaTxParts = {(proxyAddress,fromAddress,toAddress,value,txData,nonce)=>{
+                return [
+                  proxyAddress,
+                  fromAddress,
+                  toAddress,
+                  web3.utils.toTwosComplement(value),
+                  txData,
+                  web3.utils.toTwosComplement(nonce),
+                ]
+              }}
               onReady={(state)=>{
                 console.log("Transactions component is ready:",state);
                 this.setState(state)
@@ -131,9 +150,7 @@ class App extends Component {
   renderQR() {
     return (
       <div style={{position:"fixed",top:100,right:20}}>
-          <Scaler config={{startZoomAt:900,origin:"150px 0px"}}>
-            <QRCode value={window.location.toString()} />
-          </Scaler>
+        <QRCode value={window.location.toString()} />
       </div>
     );
   }
@@ -151,7 +168,6 @@ class App extends Component {
   renderHome() {
     return (
       <div className="titleCenter" style={{marginTop:-50,width:"100%"}}>
-        <Scaler config={{origin:"50px center"}}>
         <div style={{width:"100%",textAlign:"center",fontSize:150}}>
          metatx.io
         </div>
@@ -173,7 +189,6 @@ class App extends Component {
             backendUrl={backendUrl}
           />
         </div>
-        </Scaler>
       </div>
     );
   }
@@ -196,21 +211,19 @@ class App extends Component {
         return (
           <div style={{padding:20}}>
             <Miner backendUrl={backendUrl} {...this.state} />
-            <Scaler config={{startZoomAt:900}}>
-              <h1><a href="/">metatx.io</a></h1>
-              <div>
-                <Address
-                  {...this.state}
-                  address={this.state.contract._address}
-                />
-              </div>
-              <div>
-                <Address
-                  {...this.state}
-                  address={this.state.owner}
-                />
-              </div>
-            </Scaler>
+            <h1><a href="/">metatx.io</a></h1>
+            <div>
+              <Address
+                {...this.state}
+                address={this.state.contract._address}
+              />
+            </div>
+            <div>
+              <Address
+                {...this.state}
+                address={this.state.owner}
+              />
+            </div>
             {ownerBouncer && (
               <Owner
                 {...this.state}
@@ -234,7 +247,6 @@ class App extends Component {
       return (
         <div style={{padding:20}}>
           <div className="titleCenter" style={{marginTop:-50}}>
-            <Scaler config={{origin:"center center"}}>
             <div style={{width:"100%",textAlign:"center",fontSize:150}}>
              metatx.io
             </div>
@@ -253,7 +265,6 @@ class App extends Component {
               DEPLOY
               </Button>
             </div>
-            </Scaler>
           </div>
         </div>
       );
@@ -261,21 +272,32 @@ class App extends Component {
   }
 
   render() {
-    const metamask = (
-      <Metamask
-        config={{requiredNetwork: ['Unknown', 'Rinkeby']}}
-        onUpdate={(state) => {
-          if(state.web3Provider) {
-            state.web3 = new Web3(state.web3Provider);
-            this.setState(state);
-          }
-        }}
-      />
-    );
+    // const metamask = (
+    //   <Metamask
+    //     config={{requiredNetwork: ['Unknown', 'Rinkeby']}}
+    //     onUpdate={(state) => {
+    //       if(state.web3Provider) {
+    //         state.web3 = new Web3(state.web3Provider);
+    //         this.setState(state);
+    //       }
+    //     }}
+    //   />
+    // );
 
     return (
       <div className="App">
-        {metamask}
+        <Dapparatus
+          metaTx={METATX}
+          config={{requiredNetwork:['Unknown','Rinkeby']}}
+          fallbackWeb3Provider={new Web3.providers.HttpProvider(WEB3_PROVIDER)}
+          onUpdate={(state)=>{
+           console.log("metamask state update:",state)
+           if(state.web3Provider) {
+             state.web3 = new Web3(state.web3Provider)
+             this.setState(state)
+           }
+          }}
+        />
         {this.renderConnectedDisplay()}
         {!this.state.address && this.state.contracts && this.renderHome()}
         {this.renderContractDisplay()}
