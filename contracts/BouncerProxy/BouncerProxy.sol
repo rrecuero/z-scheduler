@@ -66,7 +66,7 @@ contract BouncerProxy is SignatureBouncer, Ownable {
   event Forwarded (address destination, uint value, bytes data);
 
   // original forward function copied from https://github.com/uport-project/uport-identity/blob/develop/contracts/Proxy.sol
-  function forward(address destination, uint value, bytes data) public {
+  function forward(address destination, uint value, bytes data) onlyValidSignatureAndData public {
       require(executeCall(destination, value, data));
       emit Forwarded(destination, value, data);
   }

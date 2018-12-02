@@ -56,6 +56,9 @@ export default class Parser {
       value: 0,
       data: packedMsg
     };
+    console.log('destination', txObject.parts[2]);
+    console.log('value', txObject.parts[3]);
+    console.log('data', txObject.parts[4]);
     console.log('txparams', txparams);
     this.web3.eth.sendTransaction(txparams, (error, transactionHash) => {
       console.log('TX CALLBACK', error, transactionHash);

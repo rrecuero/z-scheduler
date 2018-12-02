@@ -41,25 +41,25 @@ contract SignatureBouncer is SignerRole {
     // Function selectors are 4 bytes long, as documented in
     // https://solidity.readthedocs.io/en/v0.4.24/abi-spec.html#function-selector
     uint256 private constant _METHOD_ID_SIZE = 4;
-    // Signature size is 65 bytes (tightly packed v + r + s), but gets padded to 96 bytes
-    uint256 private constant _SIGNATURE_SIZE = 96;
+    // Signature size is 65 bytes (tightly packed v + r + s)
+    uint256 private constant _SIGNATURE_SIZE = 65;
     // Signer size is 20 bytes
     uint256 private constant _SIGNER_SIZE = 20;
 
+    event AccountRetrieved (address indexed sender, bytes signature);
     /**
      * @dev requires that a valid signature with a specifed method and params of a signer was provided
      */
     modifier onlyValidSignatureAndData() {
-        uint start = msg.data.length - _SIGNATURE_SIZE - _SIGNER_SIZE;
         bytes memory signature = new bytes(_SIGNATURE_SIZE);
         for (uint j = 0; j < signature.length; j++) {
-          signature[j] = msg.data[j + start];
+          signature[j] = msg.data[j + msg.data.length - _SIGNATURE_SIZE - _SIGNER_SIZE];
         }
-        start = start + _SIGNATURE_SIZE;
         bytes memory signer = new bytes(_SIGNER_SIZE);
         for (uint i = 0; i < signer.length; i++) {
-          signer[i] = msg.data[i + start];
+          signer[i] = msg.data[i + msg.data.length - _SIGNER_SIZE];
         }
+        emit AccountRetrieved(bytesToAddress(signer), signature);
         require(isValidSignatureAndData(bytesToAddress(signer), signature));
         _;
     }
@@ -92,7 +92,6 @@ contract SignatureBouncer is SignerRole {
      */
     function _isValidDataHash(bytes32 hash, bytes signature) internal view returns (bool) {
         address signer = hash.toEthSignedMessageHash().recover(signature);
-
         return signer != address(0) && isSigner(signer);
     }
 }
