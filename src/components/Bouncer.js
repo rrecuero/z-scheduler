@@ -11,7 +11,7 @@ class Bouncer extends Component {
     this.pollInterval = null;
     this.state = {
       count: "loading...",
-      gasLimit: 120000,
+      gasLimit: 920000,
       minBlock: props.block
     };
   }
