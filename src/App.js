@@ -14,7 +14,6 @@ import Miner from "./components/Miner/index.js";
 import Screen from "./components/Screen/index.js";
 import Header from "./components/Header/index.js";
 import Footer from "./components/Footer/index.js";
-import QRCode from 'qrcode.react';
 import cx from 'classnames';
 import axios from 'axios';
 
@@ -149,7 +148,7 @@ class App extends Component {
       <Screen>
         <div className={styles.home}>
           <h1 className={styles.title}>
-           z-scheduler
+           Scheduler
           </h1>
           <h3 className={styles.subtitle}>
             Exploring etherless meta transactions, scheduled tx
@@ -197,7 +196,9 @@ class App extends Component {
         return (
           <div style={{padding:20}}>
             <Miner backendUrl={backendUrl} {...this.state} />
-            <h1><a href="/">z-scheduler</a></h1>
+            <h1 className={styles.title}>
+              Scheduler
+            </h1>
             <div>
               <Address
                 {...this.state}
@@ -251,12 +252,10 @@ class App extends Component {
         {!this.state.address && this.state.contracts && this.renderHome()}
         {this.renderContractDisplay()}
         {this.state.contract &&
-          <div style={{position:"fixed",top:100,right:20}}>
-            <QRCode value={window.location.toString()} />
-          </div>
-        }
-        {this.state.contract &&
-          <SignButton {...this.state} backendUrl={backendUrl} />
+          <SignButton
+            ownerBouncer={this.state.owner.toLowerCase() ===
+              this.state.account.toLowerCase()}
+            {...this.state} backendUrl={backendUrl} />
         }
         <Footer />
       </div>

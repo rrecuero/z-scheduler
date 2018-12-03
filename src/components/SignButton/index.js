@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Blockie, Scaler, Button } from "dapparatus"
+import { Blockie } from "dapparatus"
 import axios from 'axios';
 import styles from './SignButton.module.scss';
 
@@ -36,9 +36,6 @@ class SignButton extends Component {
     let timestamp = Date.now();
     let message = `${this.props.account} trusts bouncer proxy
       ${this.props.address} at ${timestamp}`;
-    console.log('this.props.web3', this.props.web3);
-    console.log(this.props.metaAccount.privateKey);
-    console.log('this.props', this.props);
     let sig = null;
     if (this.props.metaAccount) {
       sig = this.props.web3.eth.accounts.sign(message,
@@ -67,20 +64,25 @@ class SignButton extends Component {
     });
   }
   render() {
+    const alreadySigned = this.state.sigs.find((sig) => sig === this.props.account);
     return (
-      <div style={{position:"fixed",bottom:20,left:20}}>
-        <Scaler config={{startZoomAt:900,origin:"0px 100px",adjustedZoom:1.2}}>
-          <div style={{paddingLeft:20}}>
-            {this.state.sigs && this.state.sigs.map((sig) => (
-              <span key={"sig"+sig} style={{padding:3,cursor:"pointer"}}>
-                <Blockie address={sig} config={{size:5}} />
-              </span>
-            ))}
-          </div>
-          <Button size="2" onClick={this.signContract.bind(this)}>
+      <div className={styles.signWrapper}>
+        <h3> Signers Added </h3>
+        <div className={styles.signers}>
+          {this.state.sigs && this.state.sigs.map((sig) => (
+            <span key={"sig"+sig} style={{padding:3,cursor:"pointer"}}>
+              <Blockie address={sig} config={{size:5}} />
+            </span>
+          ))}
+        </div>
+        {(!alreadySigned && !this.props.ownerBouncer) && (
+          <button className={'purple'} onClick={this.signContract.bind(this)}>
             Sign
-          </Button>
-        </Scaler>
+          </button>
+        )}
+        {(alreadySigned || this.props.ownerBouncer) && (
+          <span>{this.props.ownerBouncer ? 'You are the owner' : 'You already signed'}</span>
+        )}
       </div>
     );
   }

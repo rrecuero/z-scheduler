@@ -1,1 +1,18 @@
 @import '../../layout/variables.scss';
+
+.signWrapper {
+  display: flex;
+  padding: 20px;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+
+  .signers {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+}
