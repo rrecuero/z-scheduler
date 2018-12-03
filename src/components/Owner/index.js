@@ -42,14 +42,8 @@ class Owner extends Component {
         <div className={styles.widgets}>
           <Widget
             title="Contract Details">
-            <Address
-              {...this.state}
-              address={this.props.contract._address}
-            />
-            <Address
-              {...this.state}
-              address={this.props.owner}
-            />
+            <Address {...this.props} address={this.props.contract._address} />
+            <Address {...this.props} address={this.props.owner}/>
           </Widget>
           <Widget
             title="Miner Details">
