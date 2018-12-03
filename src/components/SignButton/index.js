@@ -25,6 +25,7 @@ class SignButton extends Component {
 
   loadSignatures() {
     axios.get(`${this.props.backendUrl}sigs/${this.props.address}`).then((response) => {
+      console.log('response', response);
       this.setState({sigs: response.data });
     })
     .catch((error) => {
@@ -64,6 +65,7 @@ class SignButton extends Component {
     });
   }
   render() {
+    console.log('this.state', this.state);
     const alreadySigned = this.state.sigs.find((sig) => sig === this.props.account);
     return (
       <div className={styles.signWrapper}>
@@ -80,8 +82,8 @@ class SignButton extends Component {
             Sign
           </button>
         )}
-        {(alreadySigned || this.props.ownerBouncer) && (
-          <span>{this.props.ownerBouncer ? 'You are the owner' : 'You already signed'}</span>
+        {(alreadySigned && !this.props.ownerBouncer) && (
+          <span>{'You already signed'}</span>
         )}
       </div>
     );

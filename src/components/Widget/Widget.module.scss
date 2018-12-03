@@ -1,0 +1,31 @@
+@import '../../layout/variables.scss';
+
+.widget {
+  width: 360px;
+  height: 360px;
+  background: $white;
+  color: $primary;
+  border: 1px solid #ccc;
+  display: block;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  margin: 20px;
+
+  .title {
+    width: 100%;
+    background: $primary;
+    color: $white;
+    padding: 20px;
+    height: 60px;
+  }
+
+  .widgetbody {
+    padding: 40px;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+
+}

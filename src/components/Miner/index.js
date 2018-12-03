@@ -32,7 +32,7 @@ export default class Miner extends Component {
   }
   render() {
     return (
-      <div style={{marginTop:20,position:"fixed",bottom:10,right:50}}>
+      <div className={styles.miner}>
         {!this.state.address && (
           <span> Loading ... </span>
         )}

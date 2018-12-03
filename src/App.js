@@ -194,25 +194,10 @@ class App extends Component {
         const ownerBouncer = this.state.owner.toLowerCase() ===
           this.state.account.toLowerCase();
         return (
-          <div style={{padding:20}}>
-            <Miner backendUrl={backendUrl} {...this.state} />
-            <h1 className={styles.title}>
-              Scheduler
-            </h1>
-            <div>
-              <Address
-                {...this.state}
-                address={this.state.contract._address}
-              />
-            </div>
-            <div>
-              <Address
-                {...this.state}
-                address={this.state.owner}
-              />
-            </div>
+          <Screen>
             {ownerBouncer && (
               <Owner
+                backendUrl={backendUrl}
                 {...this.state}
               />
             )}
@@ -222,7 +207,7 @@ class App extends Component {
                 backendUrl={backendUrl}
               />
             )}
-          </div>
+          </Screen>
         );
       }
     } else  {
@@ -251,12 +236,6 @@ class App extends Component {
         {this.renderConnectedDisplay()}
         {!this.state.address && this.state.contracts && this.renderHome()}
         {this.renderContractDisplay()}
-        {this.state.contract &&
-          <SignButton
-            ownerBouncer={this.state.owner.toLowerCase() ===
-              this.state.account.toLowerCase()}
-            {...this.state} backendUrl={backendUrl} />
-        }
         <Footer />
       </div>
     );
