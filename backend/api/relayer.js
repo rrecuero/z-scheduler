@@ -6,9 +6,11 @@ module.exports = (app, redis, accounts, web3) => {
   const DESKTOPMINERACCOUNT = 3;
   const NETWORK = config.get('deploy').network;
   const transactionListKey = 'transactionList' + NETWORK;
+  const deployedContractsKey = 'deployedcontracts' + NETWORK;
 
   app.get('/api/relayer/clear', (req, res) => {
     redis.set(transactionListKey, JSON.stringify([]), 'EX', 60 * 60 * 24 * 7);
+    redis.set(deployedContractsKey, JSON.stringify([]), 'EX', 60 * 60 * 24 * 7);
     res.end(JSON.stringify({ success: true }));
   });
 
@@ -28,7 +30,6 @@ module.exports = (app, redis, accounts, web3) => {
 
   app.get('/api/relayer/contracts', (req, res) => {
     console.log('/contracts');
-    const deployedContractsKey = 'deployedcontracts' + NETWORK;
     redis.get(deployedContractsKey, (err, result) => {
       res.end(result);
     });
@@ -90,7 +91,6 @@ module.exports = (app, redis, accounts, web3) => {
     console.log('/deploy', req.body);
     let contractsToSave;
     const { contractAddress } = req.body;
-    const deployedContractsKey = 'deployedcontracts' + NETWORK;
     redis.get(deployedContractsKey, (err, result) => {
       try {
         contractsToSave = JSON.parse(result);
