@@ -1,6 +1,7 @@
 @import '../../layout/variables.scss';
 
 .widget {
+  max-width: 100%;
   width: 360px;
   height: 360px;
   background: $white;
@@ -20,7 +21,7 @@
   }
 
   .widgetbody {
-    padding: 40px;
+    padding: 20px;
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;

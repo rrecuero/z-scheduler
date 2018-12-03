@@ -53,7 +53,7 @@ export default class Parser {
       from: this.account,
       gas: txObject.gas,
       gasPrice: Math.round(4 * 1000000000),
-      value: 0,
+      value: txObject.parts[3],
       data: packedMsg
     };
     console.log('destination', txObject.parts[2]);

@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { Button, Address } from "dapparatus"
+import { Button } from "dapparatus"
 import { soliditySha3 } from 'web3-utils';
 import axios from 'axios';
 import Widget from '../Widget';
+import ContractDetails from '../Widgets/ContractDetails.js';
+import SignButton from '../SignButton';
 import styles from './Bouncer.module.scss';
 
 const POLL_TIME = 5009;
@@ -154,11 +156,13 @@ export default class Bouncer extends Component {
       <div className={styles.bouncer}>
         <h1> User View</h1>
         <div className={styles.widgets}>
-          <Widget
-            title="Contract Details">
-            <Address {...this.props} address={this.props.contract._address} />
-            <Address {...this.props} address={this.props.owner}/>
-          </Widget>
+          <SignButton
+            {...this.props}
+            address={this.props.address}
+            ownerBouncer={this.props.owner.toLowerCase() ===
+              this.props.account.toLowerCase()}
+            backendUrl={this.props.backendUrl} />
+          <ContractDetails {...this.props} />
           <Widget
             title="Example Contract">
             <div>

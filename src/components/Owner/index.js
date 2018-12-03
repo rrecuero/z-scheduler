@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Events, Blockie, Button, Address } from "dapparatus";
+import { Events, Blockie, Button } from "dapparatus";
 import Widget from '../Widget';
-import Miner from '../Miner';
+import ContractDetails from '../Widgets/ContractDetails.js';
+import RelayerDetails from '../Widgets/RelayerDetails.js';
 import SignButton from '../SignButton';
 import styles from './Owner.module.scss';
 
@@ -41,15 +42,6 @@ class Owner extends Component {
         </h1>
         <div className={styles.widgets}>
           <Widget
-            title="Contract Details">
-            <Address {...this.props} address={this.props.contract._address} />
-            <Address {...this.props} address={this.props.owner}/>
-          </Widget>
-          <Widget
-            title="Miner Details">
-            <Miner backendUrl={this.props.backendUrl} {...this.state} />
-          </Widget>
-          <Widget
             title="Bouncers">
             <input
               style={{verticalAlign:"middle",width:300,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
@@ -80,6 +72,8 @@ class Owner extends Component {
                 backendUrl={this.props.backendUrl} />
             }
           </Widget>
+          <ContractDetails {...this.props} />
+          <RelayerDetails {...this.props} />
           <Widget
             title="Signer Events">
             <Events

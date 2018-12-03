@@ -25,7 +25,6 @@ class SignButton extends Component {
 
   loadSignatures() {
     axios.get(`${this.props.backendUrl}sigs/${this.props.address}`).then((response) => {
-      console.log('response', response);
       this.setState({sigs: response.data });
     })
     .catch((error) => {
@@ -45,7 +44,6 @@ class SignButton extends Component {
       sig = await this.props.web3.eth.personal.sign(
         message, this.props.account);
     }
-    console.log("SIG", sig);
     let data = JSON.stringify({
       address: this.props.address,
       account: this.props.account,
@@ -58,14 +56,13 @@ class SignButton extends Component {
         'Content-Type': 'application/json',
       }
     }).then((response) => {
-      console.log("SIGN SIG", response);
+      console.log("Signature added", response);
     })
     .catch((error) => {
       console.error("Error signing", error);
     });
   }
   render() {
-    console.log('this.state', this.state);
     const alreadySigned = this.state.sigs.find((sig) => sig === this.props.account);
     return (
       <div className={styles.signWrapper}>

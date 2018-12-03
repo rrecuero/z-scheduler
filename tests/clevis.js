@@ -175,12 +175,11 @@ module.exports = {
         let testAbi = localContractAbi("Example")
         let testAddress = localContractAddress("Example")
         var data = (new web3.eth.Contract(testAbi,testAddress)).methods.addAmount(5).encodeABI()
-        console.log("DATA:",data)
 
         const nonce = 0;
         const rewardAddress = "0x0000000000000000000000000000000000000000"
 
-        const reqardAmount = 0
+        const rewardAmount = 0
 
         //keccak256(abi.encodePacked(address(this), signer, destination, value, data, nonce[signer])),
         const parts = [
@@ -190,7 +189,7 @@ module.exports = {
           web3.utils.toTwosComplement(0),
           data,
           rewardAddress,
-          web3.utils.toTwosComplement(reqardAmount),
+          web3.utils.toTwosComplement(rewardAmount),
           web3.utils.toTwosComplement(nonce),
         ]
         const hashOfMessage = soliditySha3(...parts);
@@ -213,9 +212,6 @@ module.exports = {
         const packedMsg = callData +
           sig.slice(2) +
           accounts[accountIndexSigner].slice(2);
-        console.log('packedMsg', packedMsg);
-        console.log('sig', sig);
-        console.log('signer', accounts[accountIndexSigner].slice(2));
         const ready = await web3.eth.call({
           to: localContractAddress("BouncerProxy"),
           data: packedMsg
