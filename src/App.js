@@ -5,12 +5,13 @@ import {
   Transactions,
   Address, Button } from "dapparatus"
 import Web3 from 'web3';
-import styles from './App.css';
-import Owner from "./components/Owner.js"
-import AllBouncers from "./components/AllBouncers.js"
-import Bouncer from "./components/Bouncer.js"
-import SignButton from "./components/SignButton.js"
-import Miner from "./components/Miner.js"
+import styles from './App.scss';
+import Owner from "./components/Owner/index.js"
+import AllBouncers from "./components/AllBouncers/index.js"
+import Bouncer from "./components/Bouncer/index.js"
+import SignButton from "./components/SignButton/index.js"
+import Miner from "./components/Miner/index.js"
+import Screen from "./components/Screen/index.js"
 import QRCode from 'qrcode.react';
 import axios from 'axios';
 
@@ -146,42 +147,42 @@ class App extends Component {
   renderHome() {
     const { web3, contracts } = this.state;
     return (
-      <div className="titleCenter" style={{marginTop:-50,width:"100%"}}>
-        <div style={{width:"100%",textAlign:"center",fontSize:150}}>
-         z-scheduler
-        </div>
-        <div style={{width:"100%",textAlign:"center",fontSize:14,marginBottom:20}}>
-          exploring etherless meta transactions, scheduled tx and different bouncer proxies
-        </div>
-        <div style={{width:"100%",textAlign:"center"}}>
-          <Button size="2" onClick={()=>{
-            window.location = "https://github.com/rrecuero/z-scheduler"
-          }}>
-            Learn more
-          </Button>
-          {web3 && contracts && (
-            <Button color="green" size="2" onClick={() => this.deployBouncerProxy(this.state.bouncerKey)}>
-              Deploy
-            </Button>
-          )}
-          {(!web3 || !contracts) && (
-            <Button color="orange" size="2" onClick={()=>{
-              alert("Please unlock Metamask or install web3 or mobile ethereum wallet.")
+      <Screen>
+        <div className={styles.home}>
+          <h1 className={styles.title}>
+           z-scheduler
+          </h1>
+          <h3 className={styles.subtitle}>
+            Exploring etherless meta transactions, scheduled tx
+            and different bouncer proxies
+          </h3>
+          <div className={styles.buttons}>
+            <Button size="2" onClick={()=>{
+              window.location = "https://github.com/rrecuero/z-scheduler"
             }}>
-              Loading...
+              Learn more
             </Button>
-          )}
-        </div>
-        <div style={{marginTop:150}}>
+            {web3 && contracts && (
+              <Button color="green" size="2" onClick={() => this.deployBouncerProxy(this.state.bouncerKey)}>
+                Deploy
+              </Button>
+            )}
+            {(!web3 || !contracts) && (
+              <Button color="orange" size="2" onClick={()=>{
+                alert("Please unlock Metamask or install web3 or mobile ethereum wallet.")
+              }}>
+                Loading...
+              </Button>
+            )}
+          </div>
           <AllBouncers backendUrl={backendUrl} />
         </div>
-      </div>
+      </Screen>
     );
   }
 
   renderContractDisplay() {
     const { web3, contracts } = this.state;
-    console.log('this.state.address', this.state.address);
     if (web3 && contracts) {
       if (!this.state.contract) {
         if (this.state.address) {

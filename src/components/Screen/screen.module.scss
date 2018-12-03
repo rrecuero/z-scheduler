@@ -1,0 +1,23 @@
+@import '../../layouts/variables.scss';
+
+.screen {
+  width: 100vw;
+  height: auto;
+  min-height: 100vh;
+  background: $white;
+  color: $primary;
+  display: block;
+  opacity: 1;
+
+  .componentwrapper {
+    height: auto;
+    padding: 35px;
+    padding-top: 60px;
+    overflow: hidden;
+  }
+
+  &.white {
+    background: $white;
+    color: $black;
+  }
+}

@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { Button } from "dapparatus"
 import { soliditySha3 } from 'web3-utils';
 import axios from 'axios';
+import styles from './Bouncer.module.scss';
 
 const POLL_TIME = 5009;
 
-class Bouncer extends Component {
+export default class Bouncer extends Component {
   constructor(props) {
     super(props);
     this.pollInterval = null;
@@ -219,5 +220,3 @@ class Bouncer extends Component {
     );
   }
 }
-
-export default Bouncer;

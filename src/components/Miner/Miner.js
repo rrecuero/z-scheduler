@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Address } from "dapparatus"
 import axios from 'axios';
+import styles from './Miner.module.scss';
 
 const POLL_TIME_MS = 5000;
 
-class Miner extends Component {
+export default class Miner extends Component {
   constructor(props) {
     super(props);
     this.pollInterval = null;
@@ -45,5 +46,3 @@ class Miner extends Component {
     );
   }
 }
-
-export default Miner;

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Events, Blockie, Button } from "dapparatus";
+import styles from './Owner.module.scss';
 
 const DEFAULT_ADDRESS = "0x0000000000000000000000000000000000000000";
 

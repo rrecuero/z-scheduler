@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { Blockie } from "dapparatus"
 import axios from 'axios';
 import StackGrid from "react-stack-grid";
+import styles from './BouncerList.module.scss';
 
 const POLL_TIME = 15500;
 
-class AllBouncers extends Component {
+export default class BouncerList extends Component {
   constructor(props) {
     super(props);
     this.pollInterval = null;
@@ -49,5 +50,3 @@ class AllBouncers extends Component {
     );
   }
 }
-
-export default AllBouncers;

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Blockie, Scaler, Button } from "dapparatus"
 import axios from 'axios';
+import styles from './SignButton.module.scss';
 
 const POLL_TIME = 15000;
 

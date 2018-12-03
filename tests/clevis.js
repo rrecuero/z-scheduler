@@ -213,6 +213,9 @@ module.exports = {
         const packedMsg = callData +
           sig.slice(2) +
           accounts[accountIndexSigner].slice(2);
+        console.log('packedMsg', packedMsg);
+        console.log('sig', sig);
+        console.log('signer', accounts[accountIndexSigner].slice(2));
         const ready = await web3.eth.call({
           to: localContractAddress("BouncerProxy"),
           data: packedMsg
