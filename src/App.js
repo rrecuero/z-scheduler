@@ -6,12 +6,14 @@ import {
   Address } from "dapparatus"
 import Web3 from 'web3';
 import styles from './App.module.scss';
-import Owner from "./components/Owner/index.js"
-import BouncerList from "./components/BouncerList/index.js"
-import Bouncer from "./components/Bouncer/index.js"
-import SignButton from "./components/SignButton/index.js"
-import Miner from "./components/Miner/index.js"
-import Screen from "./components/Screen/index.js"
+import Owner from "./components/Owner/index.js";
+import BouncerList from "./components/BouncerList/index.js";
+import Bouncer from "./components/Bouncer/index.js";
+import SignButton from "./components/SignButton/index.js";
+import Miner from "./components/Miner/index.js";
+import Screen from "./components/Screen/index.js";
+import Header from "./components/Header/index.js";
+import Footer from "./components/Footer/index.js";
 import QRCode from 'qrcode.react';
 import cx from 'classnames';
 import axios from 'axios';
@@ -230,6 +232,7 @@ class App extends Component {
   render() {
     return (
       <div className={styles.app}>
+        <Header />
         <div className={styles.dapparatusWrapper}>
           <Dapparatus
             metaTx={METATX}
@@ -255,6 +258,7 @@ class App extends Component {
         {this.state.contract &&
           <SignButton {...this.state} backendUrl={backendUrl} />
         }
+        <Footer />
       </div>
     );
   }

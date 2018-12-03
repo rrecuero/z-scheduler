@@ -1,0 +1,61 @@
+@import '../../layout/variables.scss';
+.footer {
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+  background: $primary;
+  padding: 60px 100px;
+
+  .brand {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+
+    img {
+      width: 33px;
+      margin-right: 14px;
+    }
+
+    a {
+      color: $white;
+    }
+
+    span {
+      color: $white;
+      margin-left: 60px;
+
+      a {
+        color: $purple-aux;
+      }
+    }
+  }
+
+  .links {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: flex-end;
+    a {
+      margin: 0 10px;
+    }
+    img {
+      width: 21px;
+    }
+  }
+}
+
+@media only screen and (max-width: $screen-sm-max) {
+
+  .footer {
+    padding: 80px 40px;
+
+    .links {
+      margin-top: 20px;
+      width: 100%;
+    }
+  }
+}
