@@ -3,16 +3,17 @@ import {
   Dapparatus,
   Gas, ContractLoader,
   Transactions,
-  Address, Button } from "dapparatus"
+  Address } from "dapparatus"
 import Web3 from 'web3';
-import styles from './App.scss';
+import styles from './App.module.scss';
 import Owner from "./components/Owner/index.js"
-import AllBouncers from "./components/AllBouncers/index.js"
+import BouncerList from "./components/BouncerList/index.js"
 import Bouncer from "./components/Bouncer/index.js"
 import SignButton from "./components/SignButton/index.js"
 import Miner from "./components/Miner/index.js"
 import Screen from "./components/Screen/index.js"
 import QRCode from 'qrcode.react';
+import cx from 'classnames';
 import axios from 'axios';
 
 let backendUrl = "http://localhost:4000/api/relayer/";
@@ -75,7 +76,7 @@ class App extends Component {
     return (
       <div>
         {web3 &&
-          <div className={styles.dapparatusWrapper}>
+          <div className={styles.transactionsWrapper}>
             <ContractLoader
               config={{DEBUG:true}}
               web3={web3}
@@ -86,7 +87,7 @@ class App extends Component {
                   if (this.state.address) {
                     console.log("Loading dyamic contract " + this.state.address);
                     const dynamicContract = customLoader(this.state.bouncerKey, this.state.address);
-                    const owner = await dynamicContract.owner().call()
+                    const owner = await dynamicContract.owner().call();
                     this.setState({
                       contract: dynamicContract,
                       owner
@@ -119,22 +120,18 @@ class App extends Component {
               }}
               onReady={(state)=>{
                 console.log("Transactions component is ready:",state);
-                this.setState(state)
+                this.setState(state);
               }}
               onReceipt={(transaction,receipt)=>{
                 // this is one way to get the deployed contract address, but instead I'll switch
                 //  to a more straight forward callback system above
-                console.log("Transaction Receipt",transaction,receipt);
-                /*if(receipt.contractAddress){
-                  window.location = "/"+receipt.contractAddress
-                }*/
+                console.log("Transaction Receipt", transaction, receipt);
               }}
             />
             <Gas
               onUpdate={(state)=>{
-                console.log("Gas price update:",state)
-                this.setState(state,()=>{
-                  console.log("GWEI set:",this.state)
+                this.setState(state, () => {
+                  console.log("GWEI set:", this.state);
                 })
               }}
             />
@@ -154,28 +151,28 @@ class App extends Component {
           </h1>
           <h3 className={styles.subtitle}>
             Exploring etherless meta transactions, scheduled tx
-            and different bouncer proxies
+            and different bouncer proxies.
           </h3>
           <div className={styles.buttons}>
-            <Button size="2" onClick={()=>{
-              window.location = "https://github.com/rrecuero/z-scheduler"
+            <button className={cx('pink')} onClick={()=>{
+              window.open("https://github.com/rrecuero/z-scheduler");
             }}>
               Learn more
-            </Button>
+            </button>
             {web3 && contracts && (
-              <Button color="green" size="2" onClick={() => this.deployBouncerProxy(this.state.bouncerKey)}>
+              <button className={cx('purple')} onClick={() => this.deployBouncerProxy(this.state.bouncerKey)}>
                 Deploy
-              </Button>
+              </button>
             )}
             {(!web3 || !contracts) && (
-              <Button color="orange" size="2" onClick={()=>{
+              <button className={cx('yellow')} onClick={()=>{
                 alert("Please unlock Metamask or install web3 or mobile ethereum wallet.")
               }}>
                 Loading...
-              </Button>
+              </button>
             )}
           </div>
-          <AllBouncers backendUrl={backendUrl} />
+          <BouncerList backendUrl={backendUrl} />
         </div>
       </Screen>
     );
@@ -232,19 +229,21 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <Dapparatus
-          metaTx={METATX}
-          config={{requiredNetwork:['Unknown','Rinkeby']}}
-          fallbackWeb3Provider={new Web3.providers.HttpProvider(FALLBACK_WEB3_PROVIDER)}
-          onUpdate={(state)=>{
-           console.log("dapparatus update:",state)
-           if(state.web3Provider) {
-             state.web3 = new Web3(state.web3Provider);
-             this.setState(state);
-           }
-          }}
-        />
+      <div className={styles.app}>
+        <div className={styles.dapparatusWrapper}>
+          <Dapparatus
+            metaTx={METATX}
+            config={{requiredNetwork:['Unknown','Rinkeby']}}
+            fallbackWeb3Provider={new Web3.providers.HttpProvider(FALLBACK_WEB3_PROVIDER)}
+            onUpdate={(state)=>{
+             console.log("dapparatus update:",state)
+             if(state.web3Provider) {
+               state.web3 = new Web3(state.web3Provider);
+               this.setState(state);
+             }
+            }}
+          />
+        </div>
         {this.renderConnectedDisplay()}
         {!this.state.address && this.state.contracts && this.renderHome()}
         {this.renderContractDisplay()}

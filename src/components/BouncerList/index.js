@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Blockie } from "dapparatus"
 import axios from 'axios';
-import StackGrid from "react-stack-grid";
 import styles from './BouncerList.module.scss';
 
 const POLL_TIME = 15500;
@@ -38,15 +37,18 @@ export default class BouncerList extends Component {
       return (<div />);
     }
     return (
-      <StackGrid columnWidth={60}>
-        {this.state.contracts.map((contract) => (
-          <div key={contract} >
-            <a href={"/"+contract}>
-              <Blockie address={contract.toLowerCase()} config={{size:6}}/>
-            </a>
-          </div>
-        ))}
-      </StackGrid>
+      <div className={styles.bouncerList}>
+        <h3>Deployed Bouncers</h3>
+        <div className={styles.list}>
+          {this.state.contracts.map((contract) => (
+            <div className={styles.bouncerItem} key={contract} >
+              <a href={"/"+contract}>
+                <Blockie address={contract.toLowerCase()} config={{size:6}}/>
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
     );
   }
 }
