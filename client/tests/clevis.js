@@ -1,10 +1,7 @@
 const clevis = require("clevis")
-const colors = require('colors')
 const chai = require("chai")
 const HDWalletProvider = require("truffle-hdwallet-provider")
 const assert = chai.assert
-const expect = chai.expect;
-const should = chai.should();
 const { soliditySha3 } = require('web3-utils');
 
 const fs = require('fs')
@@ -17,8 +14,6 @@ const web3 = new Web3(
       clevisConfig.provider) :
     new Web3.providers.HttpProvider(clevisConfig.provider)
 );
-
-//console.log('clevisConfig.provider', clevisConfig.provider);
 
 function localContractAddress(contract){
   return fs.readFileSync(clevisConfig.CONTRACTS_FOLDER+"/"+contract+ "/" + contract + ".address").toString().trim()
@@ -36,20 +31,8 @@ function printTxResult(result){
 function bigHeader(str){
   return "########### "+str+" "+Array(128-str.length).join("#")
 }
-function rand(min, max) {
-  return Math.floor( Math.random() * (max - min) + min );
-}
-function getPaddedHexFromNumber(num,digits){
-  let hexIs = web3.utils.numberToHex(num).replace("0x","");
-  while(hexIs.length<digits){
-    hexIs = "0"+hexIs
-  }
-  return hexIs
-}
 const tab = "\t\t";
 module.exports = {
-
-
   web3:web3,
   localContractAddress,
   contracts:fs.readFileSync(clevisConfig.ROOT_FOLDER + "/contracts.clevis").toString().trim().split("\n"),
@@ -88,7 +71,7 @@ module.exports = {
         let count = 0
         for(let c in result.contracts){
           console.log("\t\t"+"contract "+c.blue+": ",result.contracts[c].bytecode.length)
-          if(count++==0){
+          if(count++ === 0){
               assert(result.contracts[c].bytecode.length > 1, "No bytecode for contract "+c)
           }
         }
@@ -184,7 +167,6 @@ module.exports = {
         this.timeout(600000)
         const data = "0x00";
         executeMetaTx(accountIndexSender, accountIndexSigner, bouncerKey, data)
-
       });
     });
   },
@@ -200,13 +182,10 @@ module.exports = {
       });
     });
   },
-
-
   mintSomeToken:(accountIndex,toAccountIndex,amount)=>{
     describe('#mintSomeToken', function() {
       it('should mint SomeToken to toAccountIndex', async function() {
         this.timeout(600000)
-
         const accounts = await clevis("accounts")
         const result = await clevis("contract","Mint","SomeToken",accountIndex,accounts[toAccountIndex],amount)
         printTxResult(result)
@@ -223,14 +202,14 @@ module.exports = {
         this.timeout(6000000)
         const result = await clevis("test","compile")
         console.log('result', result);
-        assert(result==0,"deploy ERRORS")
+        assert(result === 0,"deploy ERRORS")
       });
     });
     describe(bigHeader('FAST'), function() {
       it('should run the fast test (everything after compile)', async function() {
         this.timeout(6000000)
         const result = await clevis("test","fast")
-        assert(result==0,"fast ERRORS")
+        assert(result === 0,"fast ERRORS")
       });
     });
   },
@@ -240,34 +219,24 @@ module.exports = {
       it('should deploy all contracts', async function() {
         this.timeout(6000000)
         const result = await clevis("test","deploy")
-        assert(result==0,"deploy ERRORS")
+        assert(result === 0,"deploy ERRORS")
       });
     });
     describe(bigHeader('METAMASK'), function() {
       it('should deploy all contracts', async function() {
         this.timeout(6000000)
         const result = await clevis("test","metamask")
-        assert(result==0,"metamask ERRORS")
+        assert(result === 0,"metamask ERRORS")
       });
     });
     describe(bigHeader('PUBLISH'), function() {
       it('should publish all contracts', async function() {
         this.timeout(6000000)
         const result = await clevis("test","publish")
-        assert(result==0,"publish ERRORS")
+        assert(result === 0,"publish ERRORS")
       });
     });
-
   },
-
-}
-
-const checkContractDeployment = async (contract)=>{
-  const localAddress = localContractAddress(contract)
-  const address = await clevis("contract","getContract","Example",web3.utils.fromAscii(contract))
-  console.log(tab,contract.blue+" contract address is "+(localAddress+"").magenta+" deployed as: "+(address+"").magenta)
-  assert(localAddress==address,contract.red+" isn't deployed correctly!?")
-  return address
 }
 
 const executeMetaTx = async (accountIndexSender,accountIndexSigner, bouncerKey, data) => {
@@ -382,17 +351,3 @@ const executeMetaTx = async (accountIndexSender,accountIndexSigner, bouncerKey, 
       console.log('TX THEN', receipt);
     });
 }
-
-
-
-//example helper function
-/*
-makeSureContractHasTokens = async (contract,contractAddress,token)=>{
-  const TokenBalance = await clevis("contract","balanceOf",token,contractAddress)
-  console.log(tab,contract.magenta+" has "+TokenBalance+" "+token)
-  assert(TokenBalance>0,contract.red+" doesn't have any "+token.red)
-}
-
-view more examples here: https://github.com/austintgriffith/galleass/blob/master/tests/galleass.js
-
-*/
