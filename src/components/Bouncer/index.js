@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Button } from "dapparatus"
 import { soliditySha3 } from 'web3-utils';
 import axios from 'axios';
 import Widget from '../Widget';
@@ -157,58 +156,39 @@ export default class Bouncer extends Component {
       <div className={styles.bouncer}>
         <h1> User View</h1>
         <div className={styles.widgets}>
-          <SignButton
-            {...this.props}
-            address={this.props.address}
-            ownerBouncer={this.props.owner.toLowerCase() ===
-              this.props.account.toLowerCase()}
-            backendUrl={this.props.backendUrl} />
           <ContractDetails {...this.props} />
           <Widget
-            title="Example Contract">
+            title="Counter Contract">
             <div>
               Example Contract Count: {this.state.count}
             </div>
-            <Button onClick={() => this.addAmountMeta(5)}>
-              meta addAmount(5)
-            </Button>
+            <button className={'purple'} onClick={() => this.addAmountMeta(5)}>
+              Increase Counter By 5
+            </button>
           </Widget>
-          <Widget
-            title="Send Ether or Tokens">
+          <Widget title="Send Ether">
             Send
-            <input
-                style={{verticalAlign:"middle",width:50,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-                type="text" name="sendEther" value={this.state.sendEther} onChange={this.handleInput.bind(this)}
-            /> ether to <input
-                style={{verticalAlign:"middle",width:300,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-                type="text" name="toAddress" value={this.state.toAddress} onChange={this.handleInput.bind(this)}
-            />
+            <input type="text" name="sendEther" value={this.state.sendEther} onChange={this.handleInput.bind(this)}/> ether to
+            <input type="text" name="toAddress" value={this.state.toAddress} onChange={this.handleInput.bind(this)}/>
             <button className={'pink'} onClick={this.sendEther.bind(this)}>
              Send
             </button>
           </Widget>
           <Widget
-            title="Schedule Transaction">
+            title="Schedule Sample ERC-20 Send">
             Send
-            <input
-                style={{verticalAlign:"middle",width:50,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-                type="text" name="sendToken" value={this.state.sendToken} onChange={this.handleInput.bind(this)}
-            />  to address <input
-                style={{verticalAlign:"middle",width:300,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-                type="text" name="tokenToAddress" value={this.state.tokenToAddress} onChange={this.handleInput.bind(this)}
-            />
-            <Button onClick={this.sendToken.bind(this)}>
+            <input type="text" name="sendToken" value={this.state.sendToken} onChange={this.handleInput.bind(this)} />
+            to address
+            <input type="text" name="tokenToAddress" value={this.state.tokenToAddress} onChange={this.handleInput.bind(this)} />
+            <button className={'purple'} onClick={this.sendToken.bind(this)}>
               Send Token
-            </Button>
-            <div style={{width:800,borderTop:"1px solid #BBBBBB",marginTop:25,paddingTop:15}}>
-              Gas Limit: <input
-                style={{verticalAlign:"middle",width:300,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-                type="text" name="gasLimit" value={this.state.gasLimit} onChange={this.handleInput.bind(this)} />
+            </button>
+            <div>
+              Gas Limit: <input type="text" name="gasLimit" value={this.state.gasLimit} onChange={this.handleInput.bind(this)} />
             </div>
             <div>
-              Minimum Block: <input
-                style={{verticalAlign:"middle",width:100,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-                type="text" name="minBlock" value={this.state.minBlock} onChange={this.handleInput.bind(this)} />
+              Minimum Block:
+              <input type="text" name="minBlock" value={this.state.minBlock} onChange={this.handleInput.bind(this)} />
               <input type="button" value="now" onClick={()=>{this.setState({minBlock:this.props.block})}} /> +
               <input type="button" value="minute" onClick={()=>{this.setState({minBlock:this.state.minBlock+4})}} />
               <input type="button" value="hour" onClick={()=>{this.setState({minBlock:this.state.minBlock+240})}} />
@@ -217,15 +197,17 @@ export default class Bouncer extends Component {
             </div>
             <div>
               Reward:
-              <input
-                  style={{verticalAlign:"middle",width:200,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-                  type="text" name="rewardToken" value={this.state.rewardToken} onChange={this.handleInput.bind(this)}
-              /> of token <input
-                  style={{verticalAlign:"middle",width:300,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-                  type="text" name="rewardTokenAddress" value={this.state.rewardTokenAddress} onChange={this.handleInput.bind(this)}
-              />
+              <input type="text" name="rewardToken" value={this.state.rewardToken} onChange={this.handleInput.bind(this)} />
+              of token
+              <input type="text" name="rewardTokenAddress" value={this.state.rewardTokenAddress} onChange={this.handleInput.bind(this)} />
             </div>
           </Widget>
+          <SignButton
+            {...this.props}
+            address={this.props.address}
+            ownerBouncer={this.props.owner.toLowerCase() ===
+              this.props.account.toLowerCase()}
+            backendUrl={this.props.backendUrl} />
         </div>
       </div>
     );

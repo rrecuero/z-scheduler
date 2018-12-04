@@ -1,0 +1,12 @@
+@import '../../layout/variables.scss';
+
+.events {
+  display: flex;
+  flex-flow: column nowrap;
+
+  div {
+    word-break: break-all;
+    width: 100%;
+    margin: 5px 0;
+  }
+}
