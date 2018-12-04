@@ -92,7 +92,7 @@ contract SignatureBouncer is SignerRole {
      */
     function _isValidDataHash(bytes32 hash, bytes signature) internal view returns (bool) {
         address signer = hash.toEthSignedMessageHash().recover(signature);
-        // return signer != address(0) && isSigner(signer);
-        return signer != address(0);
+        return signer != address(0) && isSigner(signer);
+        // return signer != address(0);
     }
 }
