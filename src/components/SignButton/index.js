@@ -25,7 +25,8 @@ class SignButton extends Component {
 
   loadSignatures() {
     axios.get(`${this.props.backendUrl}sigs/${this.props.address}`).then((response) => {
-      this.setState({sigs: response.data });
+      console.log('response', response);
+      this.setState({sigs: JSON.parse(response.data) });
     })
     .catch((error) => {
       console.error('Error loading backend', error);

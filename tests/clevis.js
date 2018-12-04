@@ -308,48 +308,11 @@ module.exports = {
           data: packedMsg
         });
         assert(ready);
-        // web3.eth.sendTransaction({
-        //     from: accounts[accountIndexSigner],
-        //     to: accounts[accountIndexReceiver],
-        //     value: weiAmount
-        // }, (error, transactionHash) => {
-        //   console.log('TX CALLBACK', error, transactionHash);
-        // })
-        //   .on('error', (err, receiptMaybe) => {
-        //     console.log('TX ERROR', err, receiptMaybe);
-        //   })
-        //   .on('transactionHash', (transactionHash) => {
-        //     console.log('TX HASH', transactionHash);
-        //   })
-        //   .on('receipt', (receipt) => {
-        //     console.log('TX RECEIPT', receipt);
-        //   })
-        //   // .on('confirmation', (confirmations, receipt) => {
-        //   //   console.log('TX CONFIRM', confirmations, receipt);
-        //   // })
-        //   .then((receipt) => {
-        //     console.log('TX THEN', receipt);
-        //   });
-
-        // Forward
-        const callData2 = instanceContract.methods.forward(
-          accounts[accountIndexReceiver],
-          web3.utils.toTwosComplement(weiAmount),
-          data,
-        ).encodeABI();
-        console.log('callData2', callData2);
-        // We packed signature and signer
-        const packedMsg2 = callData2 + sig.slice(2) + accounts[accountIndexSigner].slice(2);
-        console.log('packedMsg2', packedMsg2);
-        const txparams = {
-          to: localContractAddress("BouncerProxy"),
-          from: accounts[accountIndexSender],
-          gas: 920000,
-          gasPrice: Math.round(4 * 1000000000),
-          value: weiAmount,
-          data: packedMsg2
-        };
-        web3.eth.sendTransaction(txparams, (error, transactionHash) => {
+        web3.eth.sendTransaction({
+            from: accounts[accountIndexSigner],
+            to: accounts[accountIndexReceiver],
+            value: weiAmount
+        }, (error, transactionHash) => {
           console.log('TX CALLBACK', error, transactionHash);
         })
           .on('error', (err, receiptMaybe) => {
@@ -370,51 +333,96 @@ module.exports = {
       });
     });
   },
-  fwdAndPaySomeToken:(accountIndexSender,accountIndexSigner)=>{
+  fwdToken:(accountIndexSender,accountIndexSigner, accountIndexReceiver)=>{
     describe('#fwdAndPaySomeToken', function() {
       it('should build meta transaction into data, sign it as accountIndexSigner and send it as accountIndexSender ', async function() {
         this.timeout(600000)
 
         const accounts = await clevis("accounts")
+        let testAbi = localContractAbi("SomeToken")
+        let testAddress = localContractAddress("SomeToken")
+        console.log('receiver', accounts[accountIndexReceiver]);
+        var data = (new web3.eth.Contract(testAbi,testAddress)).methods.transfer(accounts[accountIndexReceiver], 1).encodeABI()
 
-        let testAbi = localContractAbi("Example")
-        let testAddress = localContractAddress("Example")
-        var data = (new web3.eth.Contract(testAbi,testAddress)).methods.addAmount(5).encodeABI()
-        console.log("DATA:",data)
+        const nonce = 0;
+        const rewardAddress = "0x0000000000000000000000000000000000000000"
 
-        const nonce = await clevis("contract","nonce","BouncerProxy",accounts[accountIndexSigner])
-
-        console.log("Current nonce for "+accounts[accountIndexSigner]+" is ",nonce)
-
-        const { soliditySha3 } = require('web3-utils');
-
-        const rewardAddress = localContractAddress("SomeToken")
-
-        const rewardAmount = 9
+        const rewardAmount = 0
 
         //keccak256(abi.encodePacked(address(this), signer, destination, value, data, nonce[signer])),
         const parts = [
           localContractAddress("BouncerProxy"),
           accounts[accountIndexSigner],
-          localContractAddress("Example"),
+          localContractAddress("SomeToken"),
           web3.utils.toTwosComplement(0),
           data,
           rewardAddress,
           web3.utils.toTwosComplement(rewardAmount),
           web3.utils.toTwosComplement(nonce),
         ]
-        console.log("PARTS",parts)
         const hashOfMessage = soliditySha3(...parts);
 
         const message = hashOfMessage
 
-        let sig = await web3.eth.sign(message, accounts[accountIndexSigner])
+        let sig = await web3.eth.sign(
+          message, accounts[accountIndexSigner]);
+        // Now we check the call
 
-        console.log("message:"+message+" sig:",sig)
+        const instanceContract = new web3.eth.Contract(
+          localContractAbi("BouncerProxy"),
+          localContractAddress("BouncerProxy")
+        );
+        const callData = instanceContract.methods.isValidSignatureAndData(
+          accounts[accountIndexSigner],
+          sig
+        ).encodeABI();
+        // We packed signature and signer
+        const packedMsg = callData +
+          sig.slice(2) +
+          accounts[accountIndexSigner].slice(2);
+        const ready = await web3.eth.call({
+          to: localContractAddress("BouncerProxy"),
+          data: packedMsg
+        });
+        assert(ready);
+        // Send the proxy contract some tokens
+        await clevis("contract","Mint","SomeToken",0,localContractAddress("BouncerProxy"), 1000);
+        // Forward
+        const callData2 = instanceContract.methods.forward(
+          localContractAddress("SomeToken"),
+          web3.utils.toTwosComplement(0),
+          data,
+        ).encodeABI();
+        // We packed signature and signer
+        const packedMsg2 = callData2 + sig.slice(2) + accounts[accountIndexSigner].slice(2);
+        const txparams = {
+          to: localContractAddress("BouncerProxy"),
+          from: accounts[accountIndexSender],
+          gas: 920000,
+          gasPrice: Math.round(4 * 1000000000),
+          value: 0,
+          data: packedMsg2
+        };
+        web3.eth.sendTransaction(txparams, (error, transactionHash) => {
+          console.log('TX CALLBACK 2', error, transactionHash);
+        })
+          .on('error', (err, receiptMaybe) => {
+            console.log('TX ERROR 2', err, receiptMaybe);
+          })
+          .on('transactionHash', (transactionHash) => {
+            console.log('TX HASH 2', transactionHash);
+          })
+          .on('receipt', (receipt) => {
+            console.log('TX RECEIPT 2', receipt);
+          })
+          // .on('confirmation', (confirmations, receipt) => {
+          //   console.log('TX CONFIRM', confirmations, receipt);
+          // })
+          .then((receipt) => {
+            console.log('TX THEN', receipt);
+          });
 
-        //function forward(bytes sig, address signer, address destination, uint value, bytes data) public {
-        const result = await clevis("contract","forward","BouncerProxy",accountIndexSender,sig,accounts[accountIndexSigner],localContractAddress("Example"),"0",data,rewardAddress,rewardAmount)
-        printTxResult(result)
+
       });
     });
   },

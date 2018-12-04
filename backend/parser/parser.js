@@ -48,17 +48,21 @@ export default class Parser {
     ).encodeABI();
     // We packed signature and signer
     const packedMsg = callData + txObject.sig.slice(2) + txObject.parts[1].slice(2);
-    const txparams = {
-      to: txObject.parts[0],
+    let txparams = {
       from: this.account,
+      to: txObject.parts[0],
+      value: 0,
+      data: packedMsg,
       gas: txObject.gas,
-      gasPrice: Math.round(4 * 1000000000),
-      value: txObject.parts[3],
-      data: packedMsg
+      gasPrice: Math.round(4 * 1000000000)
     };
-    console.log('destination', txObject.parts[2]);
-    console.log('value', txObject.parts[3]);
-    console.log('data', txObject.parts[4]);
+    if (txObject.parts[3] > 0) {
+      txparams = {
+        from: this.account,
+        to: txObject.parts[2],
+        value: txObject.parts[3]
+      };
+    }
     console.log('txparams', txparams);
     this.web3.eth.sendTransaction(txparams, (error, transactionHash) => {
       console.log('TX CALLBACK', error, transactionHash);

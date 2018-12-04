@@ -8,10 +8,6 @@ clevis.mintSomeToken(0, 1, 99);
 
 //use account 2 to send a tx to the Example contract as account 1
 clevis.fwd(2, 1)
-// clevis.fwdSendEther(2, 1, 0, 10)
-//account 1 needs approve the BouncerProxy to move SomeToken around
-// clevis.approveBouncerProxy(1,99);
-
-
+clevis.approveBouncerProxy(1,99);
+clevis.fwdToken(3,1,0)
 //
-// clevis.fwdAndPaySomeToken(2,1)

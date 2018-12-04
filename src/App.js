@@ -3,14 +3,12 @@ import {
   Dapparatus,
   Gas, ContractLoader,
   Transactions,
-  Address } from "dapparatus"
+} from "dapparatus"
 import Web3 from 'web3';
 import styles from './App.module.scss';
 import Owner from "./components/Owner/index.js";
 import BouncerList from "./components/BouncerList/index.js";
 import Bouncer from "./components/Bouncer/index.js";
-import SignButton from "./components/SignButton/index.js";
-import Miner from "./components/Miner/index.js";
 import Screen from "./components/Screen/index.js";
 import Header from "./components/Header/index.js";
 import Footer from "./components/Footer/index.js";

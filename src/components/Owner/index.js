@@ -66,6 +66,7 @@ class Owner extends Component {
             title="Signers">
             {this.props.contract &&
               <SignButton
+                {...this.props}
                 address={this.props.address}
                 ownerBouncer={this.props.owner.toLowerCase() ===
                   this.props.account.toLowerCase()}

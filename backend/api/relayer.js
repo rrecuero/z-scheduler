@@ -24,7 +24,8 @@ module.exports = (app, redis, accounts, web3) => {
     console.log('/sigs/' + req.params.contract);
     const sigsKey = req.params.contract + 'sigs';
     redis.get(sigsKey, (err, result) => {
-      res.end(result);
+      console.log('result', result);
+      res.end(JSON.stringify(result || []));
     });
   });
 

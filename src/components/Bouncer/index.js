@@ -76,11 +76,12 @@ export default class Bouncer extends Component {
       this.state.sendToken).encodeABI();
     console.log("SENDING ",
       this.state.sendToken,
-      " tokens at address "+this.state.sendTokenAddress+" to address "+this.state.tokenToAddress);
-    this.setState({ sendToken:"", sendTokenAddress:"", tokenToAddress:"" });
+      ` tokens at address ${contracts.SomeToken._address} to address ${this.state.tokenToAddress}`);
+    this.setState({ sendToken:"", tokenToAddress:"" });
     this.sendMetaTx(
-      contract._address,account,
-      this.state.sendTokenAddress,
+      contract._address,
+      account,
+      contracts.SomeToken._address,
       0,
       data,
       this.state.minBlock
@@ -192,9 +193,6 @@ export default class Bouncer extends Component {
             <input
                 style={{verticalAlign:"middle",width:50,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
                 type="text" name="sendToken" value={this.state.sendToken} onChange={this.handleInput.bind(this)}
-            /> of token <input
-                style={{verticalAlign:"middle",width:300,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
-                type="text" name="sendTokenAddress" value={this.state.sendTokenAddress} onChange={this.handleInput.bind(this)}
             />  to address <input
                 style={{verticalAlign:"middle",width:300,margin:6,maxHeight:20,padding:5,border:'2px solid #ccc',borderRadius:5}}
                 type="text" name="tokenToAddress" value={this.state.tokenToAddress} onChange={this.handleInput.bind(this)}
