@@ -36,13 +36,15 @@ export default class ContractDetails extends Component {
       <Widget
         title="Contract Details">
         <div className={styles.details}>
-          <span> Contract Address </span>
+          <h4> Contract Address </h4>
           <Address {...this.props} address={this.props.contract._address} />
           <div className={styles.tokenBalance}>
-            <div className={styles.bold}>{this.state.tokenBalance}</div> SomeToken (ERC-20) 
+            <div className={styles.bold}>{this.state.tokenBalance}</div> SomeToken (ERC-20)
           </div>
-          <span> Contract Owner </span>
+          <h4> Contract Owner </h4>
           <Address {...this.props} address={this.props.owner}/>
+          <h4> Type of Bouncer </h4>
+          <div> {process.env.REACT_APP_BOUNCER || 'BouncerProxy'} </div>
         </div>
       </Widget>
     );
