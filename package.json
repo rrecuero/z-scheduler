@@ -3,32 +3,33 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "classnames": "^2.2.6",
-    "clevis": "0.0.105",
-    "dapparatus": "^1.0.44",
-    "mocha": "^5.2.0",
-    "node-sass": "^4.10.0",
-    "qrcode.react": "^0.8.0",
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
-    "react-scripts": "2.1.1",
-    "react-stack-grid": "^0.7.1",
-    "s3": "^4.4.0",
-    "web3": "^1.0.0-beta.36"
   },
+  "devDependencies": {},
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "heroku-postbuild": "cd client/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
+    "postinstall": "npm install --prefix backend && npm install --prefix client"
   },
   "browserslist": [
     ">0.2%",
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rrecuero/z-scheduler.git"
+  },
+  "keywords": [
+    "react",
+    "ethereum",
+    "clevis",
+    "nodejs",
+    "openzeppelin"
+  ],
+  "author": "Ramon Recuero <ramon@dapis.io>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rrecuero/z-scheduler/issues"
+  },
+  "homepage": "https://github.com/rrecuero/z-scheduler#readme"
 }

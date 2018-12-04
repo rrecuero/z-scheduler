@@ -15,7 +15,8 @@ const web3 = new Web3();
 const app = express();
 const version = '1.0';
 const port = process.env.PORT || 4000;
-const NETWORK = config.get('deploy').network;
+const NETWORK = process.env.NETWORK || config.get('deploy').network;
+const { bouncerKey } = process.env.BOUNCER || config.get('deploy');
 
 const corsMiddleware = (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -84,13 +85,11 @@ const contracts = ContractLoader([
 ], web3);
 
 web3.eth.getAccounts().then((_accounts) => {
-  const parser = new Parser(redis, _accounts[3], 'BouncerProxy', contracts.BouncerProxy._jsonInterface, web3);
-  console.log('ACCOUNTS', _accounts);
+  const parser = new Parser(redis, _accounts[3], bouncerKey, contracts[bouncerKey]._jsonInterface, web3);
 
   web3.eth.getBlockNumber().then((blockNumber) => {
-    console.log('blockNumber', blockNumber);
     setInterval(() => {
-      console.log('::: TX CHECKER :::: loading transactions from cache...');
+      console.log('::: TX CHECKER :::: loading transactions from cache...', blockNumber);
       parser.loopTransactions();
     }, 5000);
   });

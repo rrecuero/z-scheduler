@@ -20,6 +20,7 @@ export const config = {
     port: 6379
   },
   deploy: {
+    bouncerKey: 'BouncerProxy',
     network: 'http://0.0.0.0:8545' //local ganache
   }
 };

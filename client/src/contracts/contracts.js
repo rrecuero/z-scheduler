@@ -1,0 +1,1 @@
+module.exports = ["BouncerProxy","SignatureBouncer","BouncerWithNonce","BouncerWithReward","Scheduler","Example","SomeToken"]
