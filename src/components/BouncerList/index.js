@@ -33,12 +33,12 @@ export default class BouncerList extends Component {
     });
   }
   render() {
-    if(!this.state.contracts){
+    if(!this.state.contracts || this.state.contracts.length === 0){
       return (<div />);
     }
     return (
       <div className={styles.bouncerList}>
-        <h3>Deployed Bouncers</h3>
+        <h3>Deployed Bouncer Proxy Contracts</h3>
         <div className={styles.list}>
           {this.state.contracts.map((contract) => (
             <div className={styles.bouncerItem} key={contract} >

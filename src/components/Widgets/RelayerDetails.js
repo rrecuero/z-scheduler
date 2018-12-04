@@ -9,8 +9,10 @@ export default class RelayerDetails extends Component {
       <Widget
         title="Relayer Details">
         <div className={styles.details}>
-          <span> Relayer Address </span>
+          <h4> Relayer Address </h4>
           <Miner backendUrl={this.props.backendUrl} {...this.props} />
+          <h4> API URL </h4>
+          <span> {this.props.backendUrl}</span>
         </div>
       </Widget>
     );

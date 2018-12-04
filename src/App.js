@@ -146,7 +146,7 @@ class App extends Component {
       <Screen>
         <div className={styles.home}>
           <h1 className={styles.title}>
-           Scheduler
+            Meta Scheduler
           </h1>
           <h3 className={styles.subtitle}>
             Exploring etherless meta transactions, scheduled tx

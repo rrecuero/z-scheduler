@@ -17,6 +17,7 @@ class Owner extends Component {
   }
 
   updateBouncers(bouncers) {
+    console.log('bouncers', bouncers);
     this.setState({ bouncers });
   }
 
@@ -42,6 +43,7 @@ class Owner extends Component {
             }
           </Widget>
           <SignerEvents
+            bouncers={this.state.bouncers}
             updateBouncers={(bouncers)=> this.updateBouncers(bouncers)}
             {...this.props} />
           <ForwardEvents

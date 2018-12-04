@@ -3,8 +3,6 @@ import { Blockie } from "dapparatus";
 import Widget from '../Widget/';
 import styles from './Bouncers.module.scss';
 
-const POLL_TIME = 5009;
-
 export default class Bouncers extends Component {
 
   constructor(props) {
@@ -30,21 +28,6 @@ export default class Bouncers extends Component {
       this.updateBouncer(null);
       console.log("~~~~ BOUNCER ADDED:", receipt);
     });
-  }
-
-  componentDidMount() {
-    this.pollInterval = setInterval(this.loadCount.bind(this), POLL_TIME);
-    this.loadCount();
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.pollInterval);
-  }
-
-  async loadCount(){
-    const { contracts, contract } = this.props;
-    const tokenBalance = await contracts.SomeToken.balanceOf(contract._address).call();
-    this.setState({ tokenBalance });
   }
 
   render() {

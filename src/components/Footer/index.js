@@ -13,7 +13,12 @@ const Footer = () => (
       <a href="/" className={styles.link}> Dapis</a>
       <span>
         Created by <a href="https://www.ramonrecuero.com" rel="noopener noreferrer" target="_blank">
-        Ramón Recuero</a>
+        Ramón Recuero</a> in colaboration with
+        <a href="https://zeppelin.solutions/" rel="noopener noreferrer" target="_blank">
+          <img
+            style={{width: '80px', height: 'auto', 'marginLeft': '10px'}}
+            src={'https://zeppelin.solutions/images/logoZeppelin-long.svg'} alt="Zeppelin" />
+        </a>
       </span>
     </div>
     <div className={styles.links}>
