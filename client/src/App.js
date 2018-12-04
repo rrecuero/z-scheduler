@@ -19,10 +19,9 @@ let backendUrl = "http://localhost:4000/api/relayer/";
 if (window.location.href.indexOf("metatx.dapis.io") >= 0) {
   backendUrl = "https://metatx.dapis.io:4000/api/relayer/";
 }
-const BOUNCER_KEY = process.env.NODE_ENV === 'production'
-  ? process.env.BOUNCER : 'BouncerProxy';
-const FALLBACK_WEB3_PROVIDER = process.env.NODE_ENV === 'production'
-  ? process.env.NETWORK : 'http://0.0.0.0:8545';
+const BOUNCER_KEY = process.env.REACT_APP_BOUNCER || 'BouncerProxy';
+const FALLBACK_WEB3_PROVIDER = process.env.REACT_APP_NETWORK || 'http://0.0.0.0:8545';
+
 const METATX = {
   endpoint: backendUrl,
   contract: require(`./contracts/${BOUNCER_KEY}.address.js`)
@@ -55,7 +54,7 @@ class App extends Component {
     tx(
       contracts[bouncerKey]._contract.deploy(
         { data: contractsCode[bouncerKey] }),
-      1220000,
+      3220000,
       (receipt) => {
       if (receipt.contractAddress) {
         axios.post(`${backendUrl}deploy`, receipt, {
@@ -84,7 +83,6 @@ class App extends Component {
               web3={web3}
               require={path => {return require(`${__dirname}/${path}`)}}
               onReady={(contracts, customLoader) => {
-                console.log("contracts loaded", contracts);
                 this.setState({ contracts, metaContract: contracts[this.state.bouncerKey] }, async () =>{
                   if (this.state.address) {
                     console.log("Loading dyamic contract " + this.state.address);
@@ -226,7 +224,6 @@ class App extends Component {
             config={{requiredNetwork:['Unknown','Rinkeby']}}
             fallbackWeb3Provider={new Web3.providers.HttpProvider(FALLBACK_WEB3_PROVIDER)}
             onUpdate={(state)=>{
-             console.log("dapparatus update:",state)
              if(state.web3Provider) {
                state.web3 = new Web3(state.web3Provider);
                this.setState(state);

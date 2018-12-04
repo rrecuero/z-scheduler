@@ -40,7 +40,7 @@ export default class BouncerList extends Component {
       <div className={styles.bouncerList}>
         <h3>Deployed Bouncer Proxy Contracts</h3>
         <div className={styles.list}>
-          {this.state.contracts.map((contract) => (
+          {[...new Set(this.state.contracts)].map((contract) => (
             <div className={styles.bouncerItem} key={contract} >
               <a href={"/"+contract}>
                 <Blockie address={contract.toLowerCase()} config={{size:6}}/>

@@ -74,7 +74,7 @@ export default class Parser {
       ).encodeABI();
     }
     if (this.bouncerKey === 'Scheduler') {
-      call = contract.methods.forward(
+      call = contract.methods.schedule(
         txObject.parts[2],
         txObject.parts[3],
         txObject.parts[4],

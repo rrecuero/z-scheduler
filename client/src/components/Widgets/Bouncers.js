@@ -45,7 +45,7 @@ export default class Bouncers extends Component {
             Add Bouncer
           </button>
           <h4> {bouncers.length > 0 ? 'Added Bouncers' : 'No bouncers yet'} </h4>
-          {bouncers && bouncers.map((bouncer)=> (
+          {bouncers && [...new Set(bouncers)].map((bouncer)=> (
             <div className={styles.bouncer} key={bouncer}>
               <Blockie address={bouncer} />
               <span>{bouncer}</span>
