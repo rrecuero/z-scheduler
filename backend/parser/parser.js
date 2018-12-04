@@ -6,11 +6,12 @@ const transactionListKey = 'transactionList' + NETWORK;
 let instance = null;
 
 export default class Parser {
-  constructor(redis, account, bouncerContract, web3) {
+  constructor(redis, account, bouncerKey, bouncerContract, web3) {
     if (!instance) {
       this.redis = redis;
       this.account = account;
       this.bouncerContract = bouncerContract;
+      this.bouncerKey = bouncerKey;
       this.web3 = web3;
       instance = this;
     }
@@ -36,16 +37,62 @@ export default class Parser {
     });
   }
 
+  // proxyAddress,
+  // fromAddress,
+  // toAddress,
+  // web3.utils.toTwosComplement(value),
+  // txData,
+  // rewardAddress,
+  // web3.utils.toTwosComplement(rewardAmount),
+  // web3.utils.toTwosComplement(minBlock),
+  // web3.utils.toTwosComplement(nonce),
+  forwardPerProxy(contract, txObject) {
+    let call = null;
+    if (this.bouncerKey === 'BouncerProxy') {
+      call = contract.methods.forward(
+        txObject.parts[2],
+        txObject.parts[3],
+        txObject.parts[4],
+      ).encodeABI();
+    }
+    if (this.bouncerKey === 'BouncerWithNonce') {
+      call = contract.methods.forward(
+        txObject.parts[2],
+        txObject.parts[3],
+        txObject.parts[4],
+        txObject.parts[8]
+      ).encodeABI();
+    }
+    if (this.bouncerKey === 'BouncerWithReward') {
+      call = contract.methods.forward(
+        txObject.parts[2],
+        txObject.parts[3],
+        txObject.parts[4],
+        txObject.parts[8],
+        txObject.parts[5],
+        txObject.parts[6]
+      ).encodeABI();
+    }
+    if (this.bouncerKey === 'Scheduler') {
+      call = contract.methods.forward(
+        txObject.parts[2],
+        txObject.parts[3],
+        txObject.parts[4],
+        txObject.parts[8],
+        txObject.parts[5],
+        txObject.parts[6],
+        txObject.parts[7]
+      ).encodeABI();
+    }
+    return call;
+  }
+
   doTransaction(contract, txObject) {
     console.log('Forwarding tx to ', contract._address, ' with local account ', this.account);
     console.log('execute TX', txObject);
 
     // Do other proxy cases
-    const callData = contract.methods.forward(
-      txObject.parts[2],
-      txObject.parts[3],
-      txObject.parts[4],
-    ).encodeABI();
+    const callData = this.forwardPerProxy(contract, txObject);
     // We packed signature and signer
     const packedMsg = callData + txObject.sig.slice(2) + txObject.parts[1].slice(2);
     const txparams = {

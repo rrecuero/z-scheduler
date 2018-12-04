@@ -2,9 +2,49 @@
 
 .bouncer {
 
+  display: flex;
+  flex-flow: column nowrap;
   h1 {
     text-align: center;
     width: 100%;
+  }
+
+  .transaction {
+    margin: 10px 40px;
+    display: flex;
+    flex-flow: column nowrap;
+    border: 2px solid $primary;
+    width: 100%;
+    max-width: 720px;
+    padding: 40px;
+
+    h4 {
+      border-bottom: 1px dotted $purple;
+      padding-bottom: 5px;
+    }
+  }
+
+  .txsetting {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+
+    input {
+      width: 50px;
+      margin: 5px;
+      padding: 5px 10px;
+
+      &[type="button"] {
+        background: $yellow;
+        color: white;
+        cursor: pointer;
+
+        &:hover {
+          background: white;
+          color: $yellow;
+        }
+      }
+    }
   }
 
   .widgets {

@@ -5,6 +5,7 @@ import Widget from '../Widget';
 import ContractDetails from '../Widgets/ContractDetails.js';
 import SignButton from '../SignButton';
 import styles from './Bouncer.module.scss';
+import cx from 'classnames';
 
 const POLL_TIME = 5009;
 
@@ -56,7 +57,6 @@ export default class Bouncer extends Component {
   sendEther(){
     let { contract,account,web3 } = this.props;
     const wei = web3.utils.toWei(this.state.sendEther+"", 'ether')
-    console.log("SENDING WEI:", wei);
     this.setState({ sendEther: "", toAddress: "" });
     this.sendMetaTx(
       contract._address,
@@ -73,9 +73,6 @@ export default class Bouncer extends Component {
     var data = contracts.SomeToken.transfer(
       this.state.tokenToAddress,
       this.state.sendToken).encodeABI();
-    console.log("SENDING ",
-      this.state.sendToken,
-      ` tokens at address ${contracts.SomeToken._address} to address ${this.state.tokenToAddress}`);
     this.setState({ sendToken:"", tokenToAddress:"" });
     this.sendMetaTx(
       contract._address,
@@ -94,7 +91,7 @@ export default class Bouncer extends Component {
     if (contract.nonce) {
       nonce = await contract.nonce(fromAddress, minBlock).call();
     }
-    console.log("Current nonce for "+fromAddress+" is ",nonce)
+    console.log("Current nonce for " + fromAddress + " is ", nonce);
     let rewardAddress = "0x0000000000000000000000000000000000000000";
     let rewardAmount = 0
     if (this.state.rewardTokenAddress) {
@@ -107,8 +104,6 @@ export default class Bouncer extends Component {
         rewardAmount = this.state.rewardToken
       }
     }
-
-    console.log("Reward: "+rewardAmount+" tokens at address "+rewardAddress)
     const parts = [
       proxyAddress,
       fromAddress,
@@ -121,9 +116,7 @@ export default class Bouncer extends Component {
       web3.utils.toTwosComplement(nonce),
     ];
     /*web3.utils.padLeft("0x"+nonce,64),*/
-    console.log("PARTS", parts);
     const message = soliditySha3(...parts);
-    console.log("sign", message);
     let sig;
     if (this.props.metaAccount) {
       sig = this.props.web3.eth.accounts.sign(message,
@@ -132,7 +125,6 @@ export default class Bouncer extends Component {
       sig = await this.props.web3.eth.personal.sign(
         message, account);
     }
-    console.log("SIG",sig);
     let postData = {
       gas: this.state.gasLimit,
       message,
@@ -141,13 +133,13 @@ export default class Bouncer extends Component {
     };
     axios.post(this.props.backendUrl+'tx', postData, {
       headers: {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       }
     }).then((response)=>{
       console.log("TX RESULT",response);
     })
     .catch((error)=>{
-      console.log(error);
+      console.error(error);
     });
   }
 
@@ -155,6 +147,28 @@ export default class Bouncer extends Component {
     return (
       <div className={styles.bouncer}>
         <h1> User View</h1>
+        <div className={styles.transaction}>
+          <h4> Transaction Params </h4>
+          <div className={cx(styles.txsetting, styles.gas)}>
+            Gas Limit: <input type="text" name="gasLimit" value={this.state.gasLimit} onChange={this.handleInput.bind(this)} />
+          </div>
+          <div className={cx(styles.txsetting, styles.minblock)}>
+            Minimum Block:
+            <input type="text" name="minBlock" value={this.state.minBlock} onChange={this.handleInput.bind(this)} />
+            <input type="button" value="now" onClick={()=>{this.setState({minBlock:this.props.block})}} /> +
+            <input type="button" value="min" onClick={()=>{this.setState({minBlock:this.state.minBlock+4})}} />
+            <input type="button" value="hour" onClick={()=>{this.setState({minBlock:this.state.minBlock+240})}} />
+            <input type="button" value="day" onClick={()=>{this.setState({minBlock:this.state.minBlock+5760})}} />
+            <input type="button" value="week" onClick={()=>{this.setState({minBlock:this.state.minBlock+40320})}} />
+          </div>
+          <div className={cx(styles.txsetting, styles.reward)}>
+            Reward:
+            <input type="text" name="rewardToken" value={this.state.rewardToken} onChange={this.handleInput.bind(this)} />
+            of token
+            <input type="text" name="rewardTokenAddress" value={this.state.rewardTokenAddress} onChange={this.handleInput.bind(this)} />
+            (use 0 for ETH)
+          </div>
+        </div>
         <div className={styles.widgets}>
           <ContractDetails {...this.props} />
           <Widget
@@ -183,24 +197,6 @@ export default class Bouncer extends Component {
             <button className={'purple'} onClick={this.sendToken.bind(this)}>
               Send Token
             </button>
-            <div>
-              Gas Limit: <input type="text" name="gasLimit" value={this.state.gasLimit} onChange={this.handleInput.bind(this)} />
-            </div>
-            <div>
-              Minimum Block:
-              <input type="text" name="minBlock" value={this.state.minBlock} onChange={this.handleInput.bind(this)} />
-              <input type="button" value="now" onClick={()=>{this.setState({minBlock:this.props.block})}} /> +
-              <input type="button" value="minute" onClick={()=>{this.setState({minBlock:this.state.minBlock+4})}} />
-              <input type="button" value="hour" onClick={()=>{this.setState({minBlock:this.state.minBlock+240})}} />
-              <input type="button" value="day" onClick={()=>{this.setState({minBlock:this.state.minBlock+5760})}} />
-              <input type="button" value="week" onClick={()=>{this.setState({minBlock:this.state.minBlock+40320})}} />
-            </div>
-            <div>
-              Reward:
-              <input type="text" name="rewardToken" value={this.state.rewardToken} onChange={this.handleInput.bind(this)} />
-              of token
-              <input type="text" name="rewardTokenAddress" value={this.state.rewardTokenAddress} onChange={this.handleInput.bind(this)} />
-            </div>
           </Widget>
           <SignButton
             {...this.props}
