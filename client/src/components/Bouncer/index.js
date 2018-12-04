@@ -88,8 +88,8 @@ export default class Bouncer extends Component {
     const { contract, account, web3 } = this.props;
     if(!minBlock) minBlock = 0;
     let nonce = 0;
-    if (contract.nonce) {
-      nonce = await contract.nonce(fromAddress, minBlock).call();
+    if (contract.getNonce) {
+      nonce = await contract.getNonce(fromAddress).call();
     }
     console.log("Current nonce for " + fromAddress + " is ", nonce);
     let rewardAddress = "0x0000000000000000000000000000000000000000";
@@ -113,7 +113,7 @@ export default class Bouncer extends Component {
       rewardAddress,
       web3.utils.toTwosComplement(rewardAmount),
       web3.utils.toTwosComplement(minBlock),
-      web3.utils.toTwosComplement(nonce),
+      web3.utils.toTwosComplement(++nonce),
     ];
     /*web3.utils.padLeft("0x"+nonce,64),*/
     const message = soliditySha3(...parts);
