@@ -144,7 +144,7 @@ export default class Parser {
   }
 
   loopTransactions() {
-    this.redis.get(transactionListKey, async (err, result) => {
+    this.redis.get(transactionListKey, (err, result) => {
       let transactions;
       try {
         transactions = JSON.parse(result) || [];

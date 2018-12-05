@@ -14,7 +14,7 @@
   },
   "betterScripts": {
     "start-api": {
-      "command": "node ./bin/api.js",
+      "command": "babel-node ./bin/api.js",
       "env": {
         "NODE_PATH": "./api",
         "LOGGER_TAG": "api",
@@ -61,6 +61,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "eslint": "^5.6.1",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-loader": "^2.1.1",
