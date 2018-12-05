@@ -64,6 +64,42 @@ Smart contract References:
 brew install heroku/brew/heroku
 ```
 
+## Accounts and passwords
+
+Create one .env file inside the backend folder:
+
+```
+REACT_APP_BOUNCER=Scheduler
+mnemonic='mnemonic of the account you want to use as a miner'
+REACT_APP_NETWORK=infuraendpoint
+# comment network and mnemonic and you will use ganache
+```
+
+Create one .env file inside the client folder:
+
+```
+SKIP_PREFLIGHT_CHECK=true
+REACT_APP_BOUNCER=Scheduler
+# REACT_APP_NETWORK= infuraendpoint
+mnemonic='mnemonic of the account you want to use to deploy via clevis'
+# comment network and mnemonic and you will use ganache
+```
+
+Switching clevis from local to Rinkeby and back.(clevis.json)
+
+For local:
+```
+  "USE_INFURA": false,
+  "provider": http://localhost:8545
+```
+
+For other network (make sure env has the mnemonic):
+
+```
+  "USE_INFURA": true,
+  "provider": 'infura endpoint'
+```
+
 ## Quick Start
 
 Run npm install in every folder:
@@ -80,6 +116,7 @@ cd client && npm run start
 ```
 
 The dApp should be running here `http://localhost:3000`.
+By default it runs on Rinkeby.
 
 ## Deploying to heroku
 
