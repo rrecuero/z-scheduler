@@ -15,10 +15,8 @@ export const config = {
     host: 'test',
     port: '1'
   },
-  redis: {
-    host: 'localhost',
-    port: 6379
-  },
+  redis_host: 'localhost',
+  redis_port: 6379,
   deploy: {
     bouncerKey: 'BouncerProxy',
     network: 'http://0.0.0.0:8545' //local ganache

@@ -77,7 +77,10 @@ app.use(express.static(path.resolve(__dirname, '../../client/build')));
 
 web3.setProvider(new web3.providers.HttpProvider(NETWORK));
 
-const redis = new Redis(config.get('redis'));
+const redis = new Redis({
+  host: process.env.REDIS_URL || config.get('redis').host,
+  port: config.get('redis').port
+});
 const contracts = ContractLoader([
   'BouncerProxy',
   'BouncerWithNonce',
