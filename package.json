@@ -1,9 +1,8 @@
 {
   "name": "z-scheduler",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "private": true,
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {},
   "scripts": {
     "heroku-postbuild": "cd client/ && yarn install && yarn install --only=dev --no-shrinkwrap && yarn run build",
