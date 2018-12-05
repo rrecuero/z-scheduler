@@ -8,6 +8,7 @@ import winston from 'winston';
 import compression from 'compression';
 import path from 'path';
 import expressWinston from 'express-winston';
+import HDWalletProvider from 'truffle-hdwallet-provider';
 import Parser from '../parser/parser';
 import ContractLoader from '../eth/contractLoader';
 
@@ -75,7 +76,15 @@ app.use(errorHandler);
 // Priority serve any static files.
 app.use(express.static(path.resolve(__dirname, '../../client/build')));
 
-web3.setProvider(new web3.providers.HttpProvider(NETWORK));
+
+let provider = new web3.providers.HttpProvider(NETWORK);
+if (process.env.NODE_ENV === 'production') {
+  provider = new Web3(new HDWalletProvider(
+    process.env.mnemonic,
+    NETWORK
+  ));
+}
+web3.setProvider(provider);
 
 let redis = null;
 if (process.env.REDIS_URL) {
@@ -95,7 +104,12 @@ const contracts = ContractLoader([
 ], web3);
 
 web3.eth.getAccounts().then((_accounts) => {
-  const parser = new Parser(redis, _accounts[3], bouncerKey, contracts[bouncerKey]._jsonInterface, web3);
+  console.log('_accounts', _accounts);
+  const parser = new Parser(redis,
+    process.env.NODE_ENV === 'production' ? _accounts[0] : _accounts[3],
+    bouncerKey,
+    contracts[bouncerKey]._jsonInterface,
+    web3);
 
   web3.eth.getBlockNumber().then((blockNumber) => {
     setInterval(() => {
