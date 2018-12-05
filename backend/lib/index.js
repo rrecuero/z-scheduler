@@ -12,7 +12,7 @@ import HDWalletProvider from 'truffle-hdwallet-provider';
 import Parser from '../parser/parser';
 import ContractLoader from '../eth/contractLoader';
 
-const web3 = new Web3();
+
 const app = express();
 const version = '1.0';
 const port = process.env.PORT || 4000;
@@ -76,15 +76,11 @@ app.use(errorHandler);
 // Priority serve any static files.
 app.use(express.static(path.resolve(__dirname, '../../client/build')));
 
-
-let provider = new web3.providers.HttpProvider(NETWORK);
-if (process.env.NODE_ENV === 'production') {
-  provider = new Web3(new HDWalletProvider(
+const web3 = new Web3(process.env.NODE_ENV === 'production'
+  ? new HDWalletProvider(
     process.env.mnemonic,
     NETWORK
-  ));
-}
-web3.setProvider(provider);
+  ) : new Web3.providers.HttpProvider(NETWORK));
 
 let redis = null;
 if (process.env.REDIS_URL) {
