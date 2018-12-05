@@ -1,8 +1,9 @@
 {
   "name": "z-scheduler",
-  "version": "1.0.1",
+  "version": "0.1.0",
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+  },
   "devDependencies": {},
   "scripts": {
     "heroku-postbuild": "cd client/ && yarn install && yarn install --only=dev --no-shrinkwrap && yarn run build",
@@ -25,6 +26,9 @@
     "nodejs",
     "openzeppelin"
   ],
+  "engines": {
+    "yarn": "1.12.3"
+  },
   "author": "Ramon Recuero <ramon@dapis.io>",
   "license": "ISC",
   "bugs": {
