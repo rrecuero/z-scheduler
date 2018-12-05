@@ -8,13 +8,11 @@
     "dapparatus": "^1.0.44",
     "mocha": "^5.2.0",
     "node-sass": "^4.10.0",
-    "qrcode.react": "^0.8.0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-scripts": "2.1.1",
-    "react-stack-grid": "^0.7.1",
     "s3": "^4.4.0",
-    "web3": "^1.0.0-beta.36"
+    "web3": "1.0.0-beta.31"
   },
   "scripts": {
     "start": "react-scripts start",

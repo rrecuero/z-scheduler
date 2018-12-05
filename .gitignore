@@ -51,6 +51,7 @@ react.log
 /coverage
 
 # production
+client/build
 /build
 
 # misc
