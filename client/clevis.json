@@ -1,11 +1,11 @@
 {
-  "provider": "http://localhost:8545",
+  "provider": "https://rinkeby.infura.io/v3/4ce12290153e465686ef8d2ad10b1157",
   "gasprice": 5.6,
   "ethprice": 109.92640955,
   "deploygas": 5500000,
   "xfergas": 1300000,
   "DEBUG": true,
-  "USE_INFURA": false,
+  "USE_INFURA": true,
   "ROOT_FOLDER": "/Users/rrecuero/dev/z-scheduler/client",
   "CRA_FOLDER": "./src",
   "TESTS_FOLDER": "tests",

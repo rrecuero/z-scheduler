@@ -109,7 +109,7 @@ module.exports = (app, redis, accounts, web3) => {
     });
   });
 
-  app.post('/api/relayer/tx', async (req, res) => {
+  app.post('/api/relayer/tx', (req, res) => {
     console.log('/tx', req.body);
     console.log('RECOVER:', req.body.message, req.body.sig);
     const account = web3.eth.accounts.recover(req.body.message, req.body.sig);
