@@ -37,15 +37,6 @@ export default class Parser {
     });
   }
 
-  // proxyAddress,
-  // fromAddress,
-  // toAddress,
-  // web3.utils.toTwosComplement(value),
-  // txData,
-  // rewardAddress,
-  // web3.utils.toTwosComplement(rewardAmount),
-  // web3.utils.toTwosComplement(minBlock),
-  // web3.utils.toTwosComplement(nonce),
   forwardPerProxy(contract, txObject) {
     let call = null;
     if (this.bouncerKey === 'BouncerProxy') {
@@ -56,7 +47,6 @@ export default class Parser {
       ).encodeABI();
     }
     if (this.bouncerKey === 'BouncerWithNonce') {
-      console.log('OOOO');
       call = contract.methods.forward(
         txObject.parts[2],
         txObject.parts[3],
@@ -75,10 +65,6 @@ export default class Parser {
       ).encodeABI();
     }
     if (this.bouncerKey === 'Scheduler') {
-      console.log('txObject', txObject);
-      console.log('nonce', txObject.parts[8]);
-      // address destination, uint value, bytes data,
-      //   uint nonce, address rewardToken, uint rewardAmount, uint minBlock
       call = contract.methods.schedule(
         txObject.parts[2],
         txObject.parts[3],
@@ -94,8 +80,6 @@ export default class Parser {
 
   doTransaction(contract, txObject) {
     console.log('Forwarding tx to ', contract._address, ' with local account ', this.account);
-    console.log('execute TX', txObject);
-
     // Do other proxy cases
     const callData = this.forwardPerProxy(contract, txObject);
     // We packed signature and signer
