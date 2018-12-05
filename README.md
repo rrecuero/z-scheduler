@@ -32,7 +32,7 @@ and without Metamask.
 Heavily inspired by the work @austintgriffith and Metacartel around meta transactions.
 
 Here are some links to dive deeper:
-
+- [BouncerProxy](https://github.com/austintgriffith/bouncer-proxy)
 - [Harbour MVP](https://github.com/Meta-tx/Harbour-MVP/wiki/Resources)
 - [BuidlGuidl](https://medium.com/@austin_48503/buidlguidl-0x2-meta-transactions-be3ea1d076a6)
 - [UniversalLogins](https://medium.com/@avsa/1dc8b17a8de7)
