@@ -17,7 +17,7 @@ import axios from 'axios';
 
 let backendUrl = "http://localhost:4000/api/relayer/";
 if (window.location.href.indexOf("metatx.dapis.io") >= 0) {
-  backendUrl = "http://metatx.dapis.io:4000/api/relayer/";
+  backendUrl = "https://metatx.dapis.io/api/relayer/";
 }
 const BOUNCER_KEY = process.env.REACT_APP_BOUNCER || 'BouncerProxy';
 const FALLBACK_WEB3_PROVIDER = process.env.REACT_APP_NETWORK || 'http://0.0.0.0:8545';
