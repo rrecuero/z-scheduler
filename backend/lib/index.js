@@ -100,9 +100,10 @@ const contracts = ContractLoader([
 ], web3);
 
 web3.eth.getAccounts().then((_accounts) => {
-  console.log('_accounts', _accounts);
+  const minerAccount = process.env.NODE_ENV === 'production' ? _accounts[0] : _accounts[3];
+  console.log('_accounts', minerAccount);
   const parser = new Parser(redis,
-    process.env.NODE_ENV === 'production' ? _accounts[0] : _accounts[3],
+    minerAccount,
     bouncerKey,
     contracts[bouncerKey]._jsonInterface,
     web3);
@@ -125,7 +126,7 @@ web3.eth.getAccounts().then((_accounts) => {
   });
 
   // Routes
-  require('../api/')(app, redis, _accounts, web3);
+  require('../api/')(app, redis, minerAccount, web3);
 
   // All remaining requests return the React app, so it can handle routing.
   app.get('*', (request, response) => {

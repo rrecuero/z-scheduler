@@ -1,6 +1,6 @@
 import { config } from 'config';
 
-const NETWORK = config.get('deploy').network;
+const NETWORK = process.env.REACT_APP_NETWORK || config.get('deploy').network;
 const transactionListKey = 'transactionList' + NETWORK;
 // Singleton
 let instance = null;

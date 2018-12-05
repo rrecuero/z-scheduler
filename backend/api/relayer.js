@@ -2,9 +2,8 @@ import { config } from 'config';
 
 let transactions = {};
 
-module.exports = (app, redis, accounts, web3) => {
-  const DESKTOPMINERACCOUNT = 3;
-  const NETWORK = config.get('deploy').network;
+module.exports = (app, redis, minerAccount, web3) => {
+  const NETWORK = process.env.REACT_APP_NETWORK || config.get('deploy').network;
   const transactionListKey = 'transactionList' + NETWORK;
   const deployedContractsKey = 'deployedcontracts' + NETWORK;
 
@@ -16,7 +15,7 @@ module.exports = (app, redis, accounts, web3) => {
 
   app.get('/api/relayer/miner', (req, res) => {
     res.end(JSON.stringify({
-      address: accounts[DESKTOPMINERACCOUNT]
+      address: minerAccount
     }));
   });
 
