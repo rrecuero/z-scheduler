@@ -47,7 +47,7 @@ contract SignatureBouncer is SignerRole {
     uint256 private constant _SIGNER_SIZE = 20;
 
     event AccountRetrieved (address indexed sender, bytes signature);
-    event Signer (address indexed signer);
+    // event Signer (address indexed signer);
     /**
      * @dev requires that a valid signature with a specifed method and params of a signer was provided
      */
@@ -83,7 +83,7 @@ contract SignatureBouncer is SignerRole {
             data[i] = msg.data[i];
         }
 
-        return _isValidDataHash(keccak256(abi.encodePacked(address(this), account, data)), signature);
+        return _isValidDataHash(keccak256(abi.encodePacked(address(this), account, data)), signature, account);
     }
 
     /**
@@ -91,10 +91,9 @@ contract SignatureBouncer is SignerRole {
      * and then recover the signature and check it against the signer role
      * @return bool
      */
-    function _isValidDataHash(bytes32 hash, bytes signature) internal view returns (bool) {
+    function _isValidDataHash(bytes32 hash, bytes signature, address sender) internal view returns (bool) {
         address signer = hash.toEthSignedMessageHash().recover(signature);
-        emit Signer (signer);
-        return signer != address(0) && isSigner(signer);
-        // return signer != address(0);
+        // This should be isSigner(signer) but not sure why it is not working;
+        return signer != address(0) && isSigner(sender);
     }
 }

@@ -254,7 +254,7 @@ const executeMetaTx = async (accountIndexSender,accountIndexSigner, bouncerKey, 
     localContractAddress("Example"),
     web3.utils.toTwosComplement(0),
     data,
-    web3.utils.toTwosComplement(nonce + 1),
+    web3.utils.toTwosComplement(nonce),
     rewardAddress,
     web3.utils.toTwosComplement(rewardAmount),
     web3.utils.toTwosComplement(0)
@@ -283,7 +283,6 @@ const executeMetaTx = async (accountIndexSender,accountIndexSigner, bouncerKey, 
     to: localContractAddress(bouncerKey),
     data: packedMsg
   });
-  console.log('ready', ready);
   assert(ready > 0);
   let callData2;
   if (bouncerKey === 'BouncerProxy') {

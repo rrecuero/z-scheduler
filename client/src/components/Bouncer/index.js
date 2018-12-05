@@ -113,10 +113,10 @@ export default class Bouncer extends Component {
       toAddress,
       web3.utils.toTwosComplement(value),
       txData,
+      web3.utils.toTwosComplement(nonce + 1),
       rewardAddress,
       web3.utils.toTwosComplement(rewardAmount),
-      web3.utils.toTwosComplement(minBlock),
-      web3.utils.toTwosComplement(nonce + 1)
+      web3.utils.toTwosComplement(minBlock)
     ];
     /*web3.utils.padLeft("0x"+nonce,64),*/
     const message = soliditySha3(...parts);

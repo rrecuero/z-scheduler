@@ -51,7 +51,7 @@ export default class Parser {
         txObject.parts[2],
         txObject.parts[3],
         txObject.parts[4],
-        txObject.parts[8]
+        txObject.parts[5]
       ).encodeABI();
     }
     if (this.bouncerKey === 'BouncerWithReward') {
@@ -59,9 +59,9 @@ export default class Parser {
         txObject.parts[2],
         txObject.parts[3],
         txObject.parts[4],
-        txObject.parts[8],
         txObject.parts[5],
-        txObject.parts[6]
+        txObject.parts[6],
+        txObject.parts[7]
       ).encodeABI();
     }
     if (this.bouncerKey === 'Scheduler') {
@@ -69,10 +69,10 @@ export default class Parser {
         txObject.parts[2],
         txObject.parts[3],
         txObject.parts[4],
-        txObject.parts[8],
         txObject.parts[5],
         txObject.parts[6],
-        txObject.parts[7]
+        txObject.parts[7],
+        txObject.parts[8]
       ).encodeABI();
     }
     return call;
