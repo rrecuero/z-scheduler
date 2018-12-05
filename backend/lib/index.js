@@ -123,6 +123,6 @@ web3.eth.getAccounts().then((_accounts) => {
   });
 
   app.listen(port, () => {
-    console.log('Listening');
+    console.log('Listening port', port);
   });
 });
