@@ -3,7 +3,7 @@
 [Check it live here](https://metatx.dapis.io)
 
 Interact with several sample smart contracts with etherless accounts and even accounts without Metamask. You can interact with several smart contracts through
-different Bouncer Proxies.
+different Bouncer Proxies and even schedule your transactions for later.
 
 - [BouncerProxy](https://github.com/rrecuero/z-scheduler/blob/master/client/contracts/BouncerProxy/BouncerProxy.sol): Simple proxy that forwards requests.
 - [BouncerProxyWithNonce](https://github.com/rrecuero/z-scheduler/blob/master/client/contracts/BouncerWithNonce/BouncerWithNonce.sol): Adds nonce check.
