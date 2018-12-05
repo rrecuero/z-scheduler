@@ -8,6 +8,7 @@ import styles from './Bouncer.module.scss';
 import cx from 'classnames';
 
 const POLL_TIME = 5009;
+const BOUNCER_KEY = process.env.REACT_APP_BOUNCER || 'BouncerProxy';
 
 export default class Bouncer extends Component {
   constructor(props) {
@@ -88,8 +89,10 @@ export default class Bouncer extends Component {
     const { contract, account, web3 } = this.props;
     if(!minBlock) minBlock = 0;
     let nonce = 0;
+    console.log('eoo', contract);
     if (contract.getNonce) {
-      nonce = await contract.getNonce(fromAddress).call();
+      window.a = contract;
+      nonce = await contract.getNonce(toAddress).call();
     }
     console.log("Current nonce for " + fromAddress + " is ", nonce);
     let rewardAddress = "0x0000000000000000000000000000000000000000";
@@ -113,7 +116,7 @@ export default class Bouncer extends Component {
       rewardAddress,
       web3.utils.toTwosComplement(rewardAmount),
       web3.utils.toTwosComplement(minBlock),
-      web3.utils.toTwosComplement(++nonce),
+      web3.utils.toTwosComplement(nonce + 1)
     ];
     /*web3.utils.padLeft("0x"+nonce,64),*/
     const message = soliditySha3(...parts);
@@ -152,22 +155,26 @@ export default class Bouncer extends Component {
           <div className={cx(styles.txsetting, styles.gas)}>
             Gas Limit: <input type="text" name="gasLimit" value={this.state.gasLimit} onChange={this.handleInput.bind(this)} />
           </div>
-          <div className={cx(styles.txsetting, styles.minblock)}>
-            Minimum Block:
-            <input type="text" name="minBlock" value={this.state.minBlock} onChange={this.handleInput.bind(this)} />
-            <input type="button" value="now" onClick={()=>{this.setState({minBlock:this.props.block})}} /> +
-            <input type="button" value="min" onClick={()=>{this.setState({minBlock:this.state.minBlock+4})}} />
-            <input type="button" value="hour" onClick={()=>{this.setState({minBlock:this.state.minBlock+240})}} />
-            <input type="button" value="day" onClick={()=>{this.setState({minBlock:this.state.minBlock+5760})}} />
-            <input type="button" value="week" onClick={()=>{this.setState({minBlock:this.state.minBlock+40320})}} />
-          </div>
-          <div className={cx(styles.txsetting, styles.reward)}>
-            Reward:
-            <input type="text" name="rewardToken" value={this.state.rewardToken} onChange={this.handleInput.bind(this)} />
-            of token
-            <input type="text" name="rewardTokenAddress" value={this.state.rewardTokenAddress} onChange={this.handleInput.bind(this)} />
-            (use 0 for ETH)
-          </div>
+          {BOUNCER_KEY === 'Scheduler' && (
+            <div className={cx(styles.txsetting, styles.minblock)}>
+              Minimum Block:
+              <input type="text" name="minBlock" value={this.state.minBlock} onChange={this.handleInput.bind(this)} />
+              <input type="button" value="now" onClick={()=>{this.setState({minBlock:this.props.block})}} /> +
+              <input type="button" value="min" onClick={()=>{this.setState({minBlock:this.state.minBlock+4})}} />
+              <input type="button" value="hour" onClick={()=>{this.setState({minBlock:this.state.minBlock+240})}} />
+              <input type="button" value="day" onClick={()=>{this.setState({minBlock:this.state.minBlock+5760})}} />
+              <input type="button" value="week" onClick={()=>{this.setState({minBlock:this.state.minBlock+40320})}} />
+            </div>
+          )}
+          {['Scheduler', 'BouncerWithReward'].indexOf(BOUNCER_KEY) !== -1 && (
+            <div className={cx(styles.txsetting, styles.reward)}>
+              Reward:
+              <input type="text" name="rewardToken" value={this.state.rewardToken} onChange={this.handleInput.bind(this)} />
+              of token
+              <input type="text" name="rewardTokenAddress" value={this.state.rewardTokenAddress} onChange={this.handleInput.bind(this)} />
+              (use 0 for ETH)
+            </div>
+          )}
         </div>
         <div className={styles.widgets}>
           <ContractDetails {...this.props} />
