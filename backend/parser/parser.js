@@ -69,10 +69,10 @@ export default class Parser {
         txObject.parts[2],
         txObject.parts[3],
         txObject.parts[4],
-        this.web3.utils.toTwosComplement(txObject.parts[8]),
+        txObject.parts[8],
         txObject.parts[5],
-        this.web3.utils.toTwosComplement(txObject.parts[6]),
-        this.web3.utils.toTwosComplement(txObject.parts[7])
+        txObject.parts[6],
+        txObject.parts[7]
       ).encodeABI();
     }
     return call;

@@ -140,12 +140,12 @@ module.exports = {
 
 
   ////----------------------------------------------------------------------------///////////////////
-  addBouncer:(accountIndex,bouncerAccountIndex)=>{
+  addBouncer:(accountIndex,bouncerAccountIndex, bouncerKey)=>{
     describe('#addBouncer', function() {
       it('should add account with index bouncerAccountIndex as a bouncer', async function() {
         this.timeout(600000);
         const accounts = await clevis("accounts");
-        const result = await clevis("contract","addSigner","BouncerProxy",accountIndex,accounts[bouncerAccountIndex]);
+        const result = await clevis("contract","addSigner",bouncerKey,accountIndex,accounts[bouncerAccountIndex]);
         printTxResult(result);
       });
     });
@@ -243,22 +243,21 @@ const executeMetaTx = async (accountIndexSender,accountIndexSigner, bouncerKey, 
   const accounts = await clevis("accounts")
   let nonce = 0;
   if (bouncerKey !== 'BouncerProxy') {
-    nonce = await clevis("contract","getNonce",bouncerKey, accounts[accountIndexSender]);
+    nonce = await clevis("contract","getNonce",bouncerKey, localContractAddress("Example"));
+    nonce ++;
   }
   const rewardAddress = "0x0000000000000000000000000000000000000000"
   const rewardAmount = 0
-
-  //keccak256(abi.encodePacked(address(this), signer, destination, value, data, nonce[signer])),
   const parts = [
     localContractAddress(bouncerKey),
     accounts[accountIndexSigner],
     localContractAddress("Example"),
     web3.utils.toTwosComplement(0),
     data,
+    web3.utils.toTwosComplement(nonce + 1),
     rewardAddress,
     web3.utils.toTwosComplement(rewardAmount),
-    web3.utils.toTwosComplement(nonce + 1),
-    web3.utils.toTwosComplement(0),
+    web3.utils.toTwosComplement(0)
   ]
   const hashOfMessage = soliditySha3(...parts);
 
@@ -284,7 +283,8 @@ const executeMetaTx = async (accountIndexSender,accountIndexSigner, bouncerKey, 
     to: localContractAddress(bouncerKey),
     data: packedMsg
   });
-  assert(ready);
+  console.log('ready', ready);
+  assert(ready > 0);
   let callData2;
   if (bouncerKey === 'BouncerProxy') {
     callData2 = instanceContract.methods.forward(
@@ -298,7 +298,7 @@ const executeMetaTx = async (accountIndexSender,accountIndexSigner, bouncerKey, 
       localContractAddress("Example"),
       web3.utils.toTwosComplement(0),
       data,
-      web3.utils.toTwosComplement(nonce+1)
+      web3.utils.toTwosComplement(nonce)
     ).encodeABI();
   }
   if (bouncerKey === 'BouncerWithReward') {
@@ -306,7 +306,7 @@ const executeMetaTx = async (accountIndexSender,accountIndexSigner, bouncerKey, 
       localContractAddress("Example"),
       web3.utils.toTwosComplement(0),
       data,
-      web3.utils.toTwosComplement(nonce+1),
+      web3.utils.toTwosComplement(nonce),
       rewardAddress,
       web3.utils.toTwosComplement(rewardAmount)
     ).encodeABI();
@@ -316,7 +316,7 @@ const executeMetaTx = async (accountIndexSender,accountIndexSigner, bouncerKey, 
       localContractAddress("Example"),
       web3.utils.toTwosComplement(0),
       data,
-      web3.utils.toTwosComplement(nonce+1),
+      web3.utils.toTwosComplement(nonce),
       rewardAddress,
       web3.utils.toTwosComplement(rewardAmount),
       web3.utils.toTwosComplement(0)
