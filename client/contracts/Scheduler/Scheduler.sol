@@ -4,9 +4,14 @@ import "contracts/BouncerWithReward/BouncerWithReward.sol";
 contract Scheduler is BouncerWithReward {
   modifier afterBlock(uint minBlock) {
     // if they specify a minimum block, make sure the current block is on or after the requirement
-    require(block.number > minBlock, "Invalid Block");
+    require(isAfterRequiredBlock(minBlock), "Invalid Block");
     _;
   }
+
+  function isAfterRequiredBlock (uint minBlock) public view returns (bool) {
+    return block.number > minBlock;
+  }
+
   function schedule(address destination, uint value, bytes data,
     uint nonce, address rewardToken, uint rewardAmount, uint minBlock)
     afterBlock(minBlock)

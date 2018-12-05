@@ -56,6 +56,7 @@ export default class Parser {
       ).encodeABI();
     }
     if (this.bouncerKey === 'BouncerWithNonce') {
+      console.log('OOOO');
       call = contract.methods.forward(
         txObject.parts[2],
         txObject.parts[3],
@@ -74,14 +75,18 @@ export default class Parser {
       ).encodeABI();
     }
     if (this.bouncerKey === 'Scheduler') {
+      console.log('txObject', txObject);
+      console.log('nonce', txObject.parts[8]);
+      // address destination, uint value, bytes data,
+      //   uint nonce, address rewardToken, uint rewardAmount, uint minBlock
       call = contract.methods.schedule(
         txObject.parts[2],
         txObject.parts[3],
         txObject.parts[4],
-        txObject.parts[8],
+        this.web3.utils.toTwosComplement(txObject.parts[8]),
         txObject.parts[5],
-        txObject.parts[6],
-        txObject.parts[7]
+        this.web3.utils.toTwosComplement(txObject.parts[6]),
+        this.web3.utils.toTwosComplement(txObject.parts[7])
       ).encodeABI();
     }
     return call;
@@ -103,7 +108,6 @@ export default class Parser {
       gas: txObject.gas,
       gasPrice: Math.round(4 * 1000000000)
     };
-    console.log('txparams', txparams);
     this.web3.eth.sendTransaction(txparams, (error, transactionHash) => {
       console.log('TX CALLBACK', error, transactionHash);
     })
@@ -137,10 +141,15 @@ export default class Parser {
       ).encodeABI();
       // We packed signature and signer
       const packedMsg = callData + transaction.sig.slice(2) + transaction.parts[1].slice(2);
-      const ready = await this.web3.eth.call({
+      let ready = await this.web3.eth.call({
         to: transaction.parts[0],
         data: packedMsg
       });
+      if (this.bouncerKey === 'Scheduler' && ready) {
+        ready = await instanceContract.methods.isAfterRequiredBlock(
+          transaction.parts[7]
+        ).call();
+      }
       if (ready) {
         console.log('Transaction is READY ---> ');
         this.doTransaction(instanceContract, transaction);

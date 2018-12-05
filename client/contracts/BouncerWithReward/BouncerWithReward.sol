@@ -19,7 +19,7 @@ contract BouncerWithReward is BouncerWithNonce {
       require((IERC20(rewardToken)).transfer(msg.sender,rewardAmount));
     }
   }
-  function forward(address destination, uint value, bytes data, uint nonce, address rewardToken, uint rewardAmount) onlyValidSignatureAndData withNonce(msg.sender, nonce) withReward(rewardToken, rewardAmount) public {
+  function forward(address destination, uint value, bytes data, uint nonce, address rewardToken, uint rewardAmount) onlyValidSignatureAndData withNonce(destination, nonce) withReward(rewardToken, rewardAmount) public {
       require(executeCall(destination, value, data));
       emit Forwarded(destination, value, data);
   }

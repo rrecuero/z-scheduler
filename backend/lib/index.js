@@ -15,8 +15,9 @@ const web3 = new Web3();
 const app = express();
 const version = '1.0';
 const port = process.env.PORT || 4000;
-const NETWORK = process.env.NETWORK || config.get('deploy').network;
-const bouncerKey = process.env.BOUNCER || config.get('deploy').bouncerKey;
+const NETWORK = process.env.REACT_APP_NETWORK || config.get('deploy').network;
+const bouncerKey = process.env.REACT_APP_BOUNCER || config.get('deploy').bouncerKey;
+console.log('bouncerKey', bouncerKey);
 
 const corsMiddleware = (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
