@@ -131,7 +131,7 @@ export default class Parser {
       });
       if (this.bouncerKey === 'Scheduler' && ready) {
         ready = await instanceContract.methods.isAfterRequiredBlock(
-          transaction.parts[7]
+          transaction.parts[8]
         ).call();
       }
       if (ready) {
