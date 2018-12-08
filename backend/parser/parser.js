@@ -80,7 +80,7 @@ export default class Parser {
   }
 
   getTxNonce() {
-    let nonce = this.web3.eth.getTransactionCount(this.account, 'pending');
+    let nonce = this.web3.eth.getTransactionCount(this.account);
     if (this.nonce === 0) {
       this.nonce = nonce;
     } else if (nonce <= this.nonce) {
