@@ -13,6 +13,7 @@ export default class Parser {
       this.bouncerContract = bouncerContract;
       this.bouncerKey = bouncerKey;
       this.web3 = web3;
+      this.nonce = 0;
       instance = this;
     }
     return instance;
@@ -90,13 +91,16 @@ export default class Parser {
       value: 0,
       data: packedMsg,
       gas: txObject.gas,
-      gasPrice: Math.round(4 * 1000000000)
+      gasPrice: Math.round(4 * (1000000000 + this.nonce)),
+      nonce: this.nonce
     };
     this.web3.eth.sendTransaction(txparams, (error, transactionHash) => {
       console.log('TX CALLBACK', error, transactionHash);
     })
       .on('error', (err, receiptMaybe) => {
         console.log('TX ERROR', err, receiptMaybe);
+        // handles replacement transaction underpriced and known transaction
+        this.nonce += 1;
       })
       .on('transactionHash', (transactionHash) => {
         console.log('TX HASH', transactionHash);
@@ -106,6 +110,7 @@ export default class Parser {
       })
       .on('confirmation', (confirmations, receipt) => {
         console.log('TX CONFIRM', confirmations, receipt);
+        this.nonce += 1;
       })
       .then((receipt) => {
         this.removeTransaction(txObject.sig);

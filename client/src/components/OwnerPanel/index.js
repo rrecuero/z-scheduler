@@ -6,9 +6,9 @@ import SignerEvents from '../Widgets/SignerEvents.js';
 import ForwardEvents from '../Widgets/ForwardEvents.js';
 import Bouncers from '../Widgets/Bouncers.js';
 import SignButton from '../SignButton';
-import styles from './Owner.module.scss';
+import styles from './OwnerPanel.module.scss';
 
-class Owner extends Component {
+class OwnerPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -54,4 +54,4 @@ class Owner extends Component {
   }
 }
 
-export default Owner;
+export default OwnerPanel;

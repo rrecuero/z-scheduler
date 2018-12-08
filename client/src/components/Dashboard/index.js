@@ -4,19 +4,20 @@ import axios from 'axios';
 import Widget from '../Widget';
 import ContractDetails from '../Widgets/ContractDetails.js';
 import SignButton from '../SignButton';
-import styles from './Bouncer.module.scss';
+import styles from './Dashboard.module.scss';
 import cx from 'classnames';
 
 const POLL_TIME = 5009;
+const DEFAULT_GAS_LIMIT = 920000;
 const BOUNCER_KEY = process.env.REACT_APP_BOUNCER || 'BouncerProxy';
 
-export default class Bouncer extends Component {
+export default class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.pollInterval = null;
     this.state = {
       count: "loading...",
-      gasLimit: 920000,
+      gasLimit: DEFAULT_GAS_LIMIT,
       minBlock: props.block
     };
   }
@@ -25,6 +26,10 @@ export default class Bouncer extends Component {
     let update = {};
     update[e.target.name] = e.target.value;
     this.setState(update);
+  }
+
+  resetInputsTx() {
+    this.setState({ minBlock: this.props.block, gasLimit: DEFAULT_GAS_LIMIT  });
   }
 
   componentDidMount() {
@@ -94,6 +99,7 @@ export default class Bouncer extends Component {
       window.a = contract;
       nonce = await contract.getNonce(toAddress).call();
     }
+    console.log('nonce', nonce);
     console.log("Current nonce for " + fromAddress + " is ", nonce);
     let rewardAddress = "0x0000000000000000000000000000000000000000";
     let rewardAmount = 0
@@ -134,6 +140,7 @@ export default class Bouncer extends Component {
       parts,
       sig
     };
+    this.resetInputsTx();
     axios.post(this.props.backendUrl+'tx', postData, {
       headers: {
         'Content-Type': 'application/json',

@@ -6,9 +6,9 @@ import {
 } from "dapparatus"
 import Web3 from 'web3';
 import styles from './App.module.scss';
-import Owner from "./components/Owner/index.js";
+import OwnerPanel from "./components/OwnerPanel/index.js";
 import BouncerList from "./components/BouncerList/index.js";
-import Bouncer from "./components/Bouncer/index.js";
+import Dashboard from "./components/Dashboard/index.js";
 import Screen from "./components/Screen/index.js";
 import Header from "./components/Header/index.js";
 import Footer from "./components/Footer/index.js";
@@ -195,13 +195,13 @@ class App extends Component {
         return (
           <Screen>
             {ownerBouncer && (
-              <Owner
+              <OwnerPanel
                 backendUrl={backendUrl}
                 {...this.state}
               />
             )}
             {!ownerBouncer && (
-              <Bouncer
+              <Dashboard
                 {...this.state}
                 backendUrl={backendUrl}
               />
