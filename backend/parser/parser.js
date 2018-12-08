@@ -91,8 +91,7 @@ export default class Parser {
       value: 0,
       data: packedMsg,
       gas: txObject.gas,
-      gasPrice: Math.round(4 * (1000000000 + this.nonce)),
-      nonce: this.nonce
+      gasPrice: Math.round(4 * (1000000000 + this.nonce))
     };
     this.web3.eth.sendTransaction(txparams, (error, transactionHash) => {
       console.log('TX CALLBACK', error, transactionHash);
