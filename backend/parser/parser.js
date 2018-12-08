@@ -13,7 +13,7 @@ export default class Parser {
       this.bouncerContract = bouncerContract;
       this.bouncerKey = bouncerKey;
       this.web3 = web3;
-      this.nonce = 1;
+      this.nonce = 50;
       instance = this;
     }
     return instance;
@@ -79,25 +79,10 @@ export default class Parser {
     return call;
   }
 
-  getTxNonce() {
-    let nonce = this.web3.eth.getTransactionCount(this.account);
-    if (this.nonce === 0) {
-      this.nonce = nonce;
-    } else if (nonce <= this.nonce) {
-      this.nonce += 1;
-      nonce = this.nonce + 0;
-    } else {
-      this.nonce = nonce;
-    }
-    return nonce;
-  }
-
-
   doTransaction(contract, txObject) {
     console.log('Forwarding tx to ', contract._address, ' with local account ', this.account);
     // Do other proxy cases
     const callData = this.forwardPerProxy(contract, txObject);
-    const nonce = this.getTxNonce();
     // We packed signature and signer
     const packedMsg = callData + txObject.sig.slice(2) + txObject.parts[1].slice(2);
     const txparams = {
@@ -106,8 +91,8 @@ export default class Parser {
       value: 0,
       data: packedMsg,
       gas: txObject.gas,
-      gasPrice: Math.round(4 * (1000000000 + nonce)),
-      nonce
+      gasPrice: Math.round(4 * (1000000000 + this.nonce)),
+      nonce: this.nonce
     };
     this.web3.eth.sendTransaction(txparams, (error, transactionHash) => {
       console.log('TX CALLBACK', error, transactionHash);
