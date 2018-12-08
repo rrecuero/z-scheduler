@@ -13,7 +13,7 @@ export default class Parser {
       this.bouncerContract = bouncerContract;
       this.bouncerKey = bouncerKey;
       this.web3 = web3;
-      this.nonce = 0;
+      this.nonce = 100;
       instance = this;
     }
     return instance;
@@ -100,7 +100,7 @@ export default class Parser {
       .on('error', (err, receiptMaybe) => {
         console.log('TX ERROR', err, receiptMaybe);
         // handles replacement transaction underpriced and known transaction
-        this.nonce += 1;
+        this.nonce += 100;
       })
       .on('transactionHash', (transactionHash) => {
         console.log('TX HASH', transactionHash);
