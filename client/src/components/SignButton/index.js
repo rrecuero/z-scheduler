@@ -70,7 +70,8 @@ class SignButton extends Component {
         <h3> Signers Added </h3>
         <div className={styles.signers}>
           {this.state.sigs && this.state.sigs.map((sig) => (
-            <span key={"sig"+sig} style={{padding:3,cursor:"pointer"}}>
+            <span
+              key={"sig"+sig} style={{padding:3,cursor:"pointer"}}>
               <Blockie address={sig} config={{size:5}} />
             </span>
           ))}

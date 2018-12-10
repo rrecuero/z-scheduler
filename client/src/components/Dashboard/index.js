@@ -3,7 +3,6 @@ import { soliditySha3 } from 'web3-utils';
 import axios from 'axios';
 import Widget from '../Widget';
 import ContractDetails from '../Widgets/ContractDetails.js';
-import SignButton from '../SignButton';
 import styles from './Dashboard.module.scss';
 import cx from 'classnames';
 
@@ -210,12 +209,6 @@ export default class Dashboard extends Component {
               Send Token
             </button>
           </Widget>
-          <SignButton
-            {...this.props}
-            address={this.props.address}
-            ownerBouncer={this.props.owner.toLowerCase() ===
-              this.props.account.toLowerCase()}
-            backendUrl={this.props.backendUrl} />
         </div>
       </div>
     );

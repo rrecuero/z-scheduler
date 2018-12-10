@@ -18,7 +18,7 @@ export default class Bouncers extends Component {
   }
 
   updateBouncer(bouncer){
-    this.setState({ bouncer });
+    this.setState({ bouncer  });
   }
 
   addBouncer() {

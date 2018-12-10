@@ -31,7 +31,7 @@ export default class SignerEvents extends Component {
   render() {
     return (
       <Widget
-        title="Signer Events">
+        title="Bouncer Events">
         <div className={styles.events}>
           {this.renderEvents("SignerAdded", true)}
           {this.renderEvents("SignerRemoved", true)}
