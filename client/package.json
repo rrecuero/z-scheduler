@@ -12,7 +12,7 @@
     "react-dom": "^16.6.3",
     "react-scripts": "2.1.1",
     "s3": "^4.4.0",
-    "web3": "1.0.0-beta.31"
+    "web3": "^1.0.0-beta.37"
   },
   "scripts": {
     "start": "react-scripts start",
