@@ -243,7 +243,7 @@ const executeMetaTx = async (accountIndexSender,accountIndexSigner, bouncerKey, 
   const accounts = await clevis("accounts")
   let nonce = 0;
   if (bouncerKey !== 'BouncerProxy') {
-    nonce = await clevis("contract","getNonce",bouncerKey, localContractAddress("Example"));
+    nonce = await clevis("contract","getNonce",bouncerKey, accounts[accountIndexSender]);
     nonce ++;
   }
   const rewardAddress = "0x0000000000000000000000000000000000000000"

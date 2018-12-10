@@ -10,7 +10,7 @@ clevis.mintSomeToken(0, 1, 99);
 // clevis.fwd(2, 1, 'BouncerProxy')
 // clevis.fwd(2, 1, 'BouncerWithNonce')
 // clevis.fwd(2, 1, 'BouncerWithReward')
-clevis.fwd(2, 1, 'BouncerProxy')
+clevis.fwd(2, 1, 'Scheduler')
 // clevis.fwdToken(3,1, 'BouncerProxy', 1)
 // clevis.fwdSendEther(3,1, 'BouncerProxy', 1, 0.1)
 //
