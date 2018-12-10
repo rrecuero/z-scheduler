@@ -14,7 +14,7 @@ contract BouncerWithNonce is BouncerProxy {
     return nonces[actor];
   }
 
-  function forward(address destination, uint value, bytes data, uint nonce) onlyValidSignatureAndData withNonce(destination, nonce) public {
+  function forward(address destination, uint value, bytes data, uint nonce) onlyValidSignatureAndData withNonce(msg.sender, nonce) public {
       require(executeCall(destination, value, data));
       emit Forwarded(destination, value, data);
   }

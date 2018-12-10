@@ -94,12 +94,10 @@ export default class Dashboard extends Component {
     const { contract, account, web3 } = this.props;
     if(!minBlock) minBlock = 0;
     let nonce = 0;
-    console.log('eoo', contract);
     if (contract.getNonce) {
       window.a = contract;
-      nonce = await contract.getNonce(toAddress).call();
+      nonce = await contract.getNonce(fromAddress).call();
     }
-    console.log('nonce', nonce);
     console.log("Current nonce for " + fromAddress + " is ", nonce);
     let rewardAddress = "0x0000000000000000000000000000000000000000";
     let rewardAmount = 0
