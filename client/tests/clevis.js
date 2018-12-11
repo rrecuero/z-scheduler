@@ -192,6 +192,16 @@ module.exports = {
       });
     });
   },
+  getNonce:(accountIndex,toAccountIndex,amount)=>{
+    describe('#getNonce', function() {
+      it('should getNonce', async function() {
+        this.timeout(600000)
+        const accounts = await clevis("accounts")
+        const result = await clevis("contract","getNonce","Scheduler",accounts[accountIndex])
+        assert(result >= 0);
+      });
+    });
+  },
 
   ////----------------------------------------------------------------------------///////////////////
 
