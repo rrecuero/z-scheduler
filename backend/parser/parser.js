@@ -38,8 +38,10 @@ export default class Parser {
     });
   }
 
-  forwardPerProxy(contract, txObject) {
+  async forwardPerProxy(contract, txObject) {
     let call = null;
+    let nonce = await contract.methods.getNonce(this.account).call();
+    nonce = Math.max(txObject.parts[5], this.web3.utils.toTwosComplement(nonce + 1));
     if (this.bouncerKey === 'BouncerProxy') {
       call = contract.methods.forward(
         txObject.parts[2],
@@ -52,7 +54,7 @@ export default class Parser {
         txObject.parts[2],
         txObject.parts[3],
         txObject.parts[4],
-        txObject.parts[5]
+        nonce
       ).encodeABI();
     }
     if (this.bouncerKey === 'BouncerWithReward') {
@@ -60,7 +62,7 @@ export default class Parser {
         txObject.parts[2],
         txObject.parts[3],
         txObject.parts[4],
-        txObject.parts[5],
+        nonce,
         txObject.parts[6],
         txObject.parts[7]
       ).encodeABI();
@@ -70,7 +72,7 @@ export default class Parser {
         txObject.parts[2],
         txObject.parts[3],
         txObject.parts[4],
-        txObject.parts[5],
+        nonce,
         txObject.parts[6],
         txObject.parts[7],
         txObject.parts[8]
@@ -79,10 +81,10 @@ export default class Parser {
     return call;
   }
 
-  doTransaction(contract, txObject) {
+  async doTransaction(contract, txObject) {
     console.log('Forwarding tx to ', contract._address, ' with local account ', this.account);
     // Do other proxy cases
-    const callData = this.forwardPerProxy(contract, txObject);
+    const callData = await this.forwardPerProxy(contract, txObject);
     // We packed signature and signer
     const packedMsg = callData + txObject.sig.slice(2) + txObject.parts[1].slice(2);
     const txparams = {

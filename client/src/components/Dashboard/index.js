@@ -94,10 +94,8 @@ export default class Dashboard extends Component {
     if(!minBlock) minBlock = 0;
     let nonce = 0;
     if (contract.getNonce) {
-      window.a = contract;
-      nonce = await contract.getNonce(fromAddress).call();
+      nonce = await contract.getNonce(proxyAddress).call();
     }
-    console.log("Current nonce for " + fromAddress + " is ", nonce);
     let rewardAddress = "0x0000000000000000000000000000000000000000";
     let rewardAmount = 0
     if (this.state.rewardTokenAddress) {
